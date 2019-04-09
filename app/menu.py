@@ -622,21 +622,23 @@ class MenuWindow(QMainWindow) :
         """Init a string with informations about data"""
         sfreq      = self.eeg_data.info["sfreq"]
         n_channels = self.eeg_data.info["nchan"]
-        infos1     = "Sampling Frequency:{}\nNumber of Channels : {}".format(
-                     sfreq, n_channels)
+        infos1     = (("<li><b>Sampling Frequency:</b> {}"
+                      + "<li><b>Number of Channels:</b> {}")
+                      .format(sfreq, n_channels))
         if self.dataType == 'raw' :
             n_times = self.eeg_data.n_times
-            infos2 = "\nTime points:{}".format(n_times)
-            infos3 = "\nDuration of the signal:{0:.2f}s".format(
-                         (n_times / sfreq))
+            infos2 = "<li><b>Time points:</b> {}</li>".format(n_times)
+            infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
+                      .format((n_times / sfreq)))
 
         if self.dataType == 'epochs' :
             times  = self.eeg_data.times
-            infos2 = "\nTime points per Epoch:{}".format(len(times))
-            infos3 = "\nDuration of the signal:{0:.2f}s".format(
-                         times[-1] - times[0])
+            infos2 = ("<li><b>Time points per Epoch:</b> {} </li>"
+                     .format(len(times)))
+            infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
+                      .format(times[-1] - times[0]))
 
-        return infos1 + infos2 + infos3
+        return "<ul>" + infos1 + infos2 + infos3 + "</ul>"
 
     #=====================================================================
     # Channel picker
@@ -677,7 +679,6 @@ class MenuWindow(QMainWindow) :
         info = QMessageBox()
         info.setBaseSize(QSize(800, 200))
         info.setIcon(QMessageBox.Information)
-        info.setText("Data informations")
         info.setInformativeText(msg)
         info.setWindowTitle("Data Informations")
         info.exec_()
