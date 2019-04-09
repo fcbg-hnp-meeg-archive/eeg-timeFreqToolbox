@@ -44,3 +44,12 @@ def batch_process_epochs(path, **parameters) :
         epochs = read_epochs(file)
         psd = EpochsPSD(epochs, **parameters)
         psd.save_avg_matrix_sef()
+
+
+def blockPrint():
+    import sys, os
+    sys.stdout = open(os.devnull, 'w')
+
+def enablePrint():
+    import sys, os
+    sys.stdout = sys.__stdout__

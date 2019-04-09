@@ -114,8 +114,6 @@ class RawPSD :
         if method == 'multitaper' :
             from mne.time_frequency import psd_multitaper
 
-            print("Computing Mulitaper PSD with parameter bandwidth = {}"
-                  .format(self.bandwidth))
             self.data, self.freqs = psd_multitaper(
                 raw,
                 fmin             = fmin,
@@ -129,9 +127,6 @@ class RawPSD :
         if method == 'welch'      :
             from mne.time_frequency import psd_welch
 
-            print(("Computing Welch PSD with parameters n_fft = {},"
-                  +" n_per_seg = {}, n_overlap = {}")
-                  .format(self.n_fft, self.n_per_seg, self.n_overlap))
             self.data, self.freqs = psd_welch(
                 raw,
                 fmin      = fmin,
@@ -271,4 +266,3 @@ class RawPSD :
         data = np.reshape(data, n_channels * num_freq_frames, order='F')
         data.tofile(f)
         f.close()
-        print("done !")

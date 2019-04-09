@@ -4,6 +4,8 @@ from PyQt5.QtGui import *
 
 from matplotlib.pyplot import close, show
 from app.menu_UI import Ui_MenuWindow
+from backend.util import blockPrint, enablePrint
+
 
 """
 File containing the main window class, ie the window for selectionning
@@ -132,6 +134,9 @@ class MenuWindow(QMainWindow) :
     def read_eeg_data(self, path) :
         """Read the eeg data depending on the file"""
         extension = self.ui.chooseFileType.currentText()
+
+        blockPrint() #Just to block printing from init functions
+
         if extension == '.fif' :
             from mne.io import read_raw_fif
             self.dataType = 'raw'
@@ -159,6 +164,8 @@ class MenuWindow(QMainWindow) :
 
         else :
             raise ValueError("Invalid Format")
+
+        enablePrint()
 
     #---------------------------------------------------------------------
     def read_montage(self) :
@@ -280,6 +287,8 @@ class MenuWindow(QMainWindow) :
         from backend.epochs_psd import EpochsPSD
         from backend.util import float_, int_
 
+        blockPrint() #Just to block printing from init functions
+
         if self.ui.psdMethod.currentText() == 'welch' :
             n_fft = self.init_nfft()
             self.psd = EpochsPSD(self.eeg_data,
@@ -308,11 +317,15 @@ class MenuWindow(QMainWindow) :
                                  picks      = self.init_picks(),
                                  montage    = self.montage)
 
+        enablePrint()
+
     #---------------------------------------------------------------------
     def init_raw_psd(self) :
         """Initialize the instance of RawPSD"""
         from backend.raw_psd import RawPSD
         from backend.util import float_, int_
+
+        blockPrint() #Just to block printing from init functions
 
         if self.ui.psdMethod.currentText() == 'welch' :
             n_fft = self.init_nfft()
@@ -341,6 +354,8 @@ class MenuWindow(QMainWindow) :
                                                .get('bandwidth', 4)),
                               picks      = self.init_picks(),
                               montage    = self.montage)
+
+        enablePrint()
 
     #---------------------------------------------------------------------
     def open_epochs_psd_visualizer(self) :
@@ -543,21 +558,35 @@ class MenuWindow(QMainWindow) :
             self.show_error("Can't find/read file :(\n"
                             + "Please verify the path and extension")
         else :
-            if self.dataType == 'epochs' : self.init_epochs_psd()
-            if self.dataType == 'raw'    : self.init_raw_psd()
             self.save_matrix()
 
     #---------------------------------------------------------------------
     def save_matrix(self) :
         """Save the matrix containing the PSD"""
+
         try :
-            if len(self.filePath) == 1 :
+            n_files = len(self.filePath)
+            if n_files == 1 :
+                print('Saving one file ...', end = '')
+                blockPrint()
+                if self.dataType == 'epochs' :
+                    self.init_epochs_psd()
+                if self.dataType == 'raw'    :
+                    self.init_raw_psd()
+                enablePrint()
                 self.psd.save_avg_matrix_sef(self.savepath)
+                print('done !')
 
             else :
                 from os.path import basename, splitext, join
 
+                print('Batch Processing of {} files'
+                      .format(len(self.filePath)))
+                n = 1
                 for path in self.filePath :
+                    print('Saving file {} out of {} ...'
+                          .format(n, n_files), end = '')
+                    blockPrint()
                     file_name = splitext(basename(path))[0]
                     self.read_eeg_data(path)
                     if self.dataType == 'epochs' :
@@ -567,6 +596,9 @@ class MenuWindow(QMainWindow) :
 
                     savepath = join(self.savepath, file_name + '-PSD.sef')
                     self.psd.save_avg_matrix_sef(savepath)
+                    enablePrint()
+                    print('done !')
+                    n+=1
 
         except (AttributeError, FileNotFoundError, OSError) :
             self.show_error("Can't find/read a file.\n"
