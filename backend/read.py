@@ -23,7 +23,7 @@ def read_ep(path, **kwargs) :
     from mne.io import RawArray
     from mne import create_info
 
-    data       = np.loadtxt(path, unpack = True)
+    data       = np.genfromtxt(path, unpack = True)
     n_channels = data.shape[0]
 
     ch_names   = ['EEG{}'.format(i) for i in range(n_channels)]
