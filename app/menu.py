@@ -349,7 +349,7 @@ class MenuWindow(QMainWindow) :
                               tmin       = float_(self.params['tmin']),
                               tmax       = float_(self.params['tmax']),
                               method     = 'multitaper',
-                              bandwidth  = int(self.params
+                              bandwidth  = float_(self.params
                                                .get('bandwidth', 4)),
                               picks      = self.init_picks(),
                               montage    = self.montage)
