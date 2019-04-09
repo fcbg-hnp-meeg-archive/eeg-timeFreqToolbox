@@ -16,10 +16,12 @@ class EpochingWindow(QDialog):
         self.ui.setupUi(self)
         self.ui.retranslateUi(self)
         self.setup_ui()
+        self.rawPath = ['']
+        self.mrkPath = ['']
 
-    #=====================================================================
+    #========================================================================
     # Setup functions
-    #=====================================================================
+    #========================================================================
     def setup_ui(self) :
         """Call all of the setup functions"""
         self.set_bindings()
@@ -57,7 +59,7 @@ class EpochingWindow(QDialog):
     def set_mrk_box(self) :
         """Set the marker box"""
         try :
-            self.read_events()
+            self.read_events(self.mrkPath[0])
         except :
             print("ERROR")
         else :
@@ -70,44 +72,42 @@ class EpochingWindow(QDialog):
     #=====================================================================
     def choose_raw_path(self) :
         """Gets called when choosing raw path"""
-        self.rawPath, _ = QFileDialog.getOpenFileName(
-            self,"Choose data path", "Raw Data (*.fif, *.sef)")
-        self.ui.rawLine.setText(self.rawPath)
-        self.ui.mrkLine.setText(self.rawPath + '.mrk')
+        self.rawPath, _ = QFileDialog.getOpenFileNames(
+            self, "Choose data path", "Raw Data (*.fif, *.sef)")
+        self.ui.rawLine.setText(self.rawPath[0])
+        self.ui.mrkLine.setText(self.rawPath[0] + '.mrk')
 
     #------------------------------------------------------------------------
     def choose_mrk_path(self) :
         """Gets called when choosing marker path"""
-        self.mrkPath, _ = QFileDialog.getOpenFileName(
+        self.mrkPath, _ = QFileDialog.getOpenFileNames(
             self,"Choose markers path", "mrk files (*.mrk)")
-        self.ui.mrkLine.setText(self.mrkPath)
+        self.ui.mrkLine.setText(self.mrkPath[0])
         self.set_mrk_box()
 
     #=====================================================================
     # Reading data functions
     #=====================================================================
-    def read_raw(self) :
+    def read_raw(self, path) :
         """Set-up the raw data in mne class"""
         extension = self.ui.rawBox.currentText()
-        self.rawPath = self.ui.rawLine.text()
         if extension == '.fif' :
             from mne.io import read_raw_fif
-            self.raw = read_raw_fif(self.rawPath)
+            self.raw = read_raw_fif(path)
 
         if extension == '.sef' :
             from backend.read import read_sef
-            self.raw = read_sef(self.rawPath)
+            self.raw = read_sef(path)
 
     #------------------------------------------------------------------------
-    def read_events(self) :
+    def read_events(self, path) :
         """Set up the events in correct class"""
         extension = self.ui.mrkBox.currentText()
-        self.mrkPath = self.ui.mrkLine.text()
         if extension == '.fif' :
             return 0
         if extension == '.mrk' :
             from backend.events import Events
-            self.events = Events(self.mrkPath)
+            self.events = Events(path)
 
     #=====================================================================
     # Data Visualization
@@ -118,7 +118,7 @@ class EpochingWindow(QDialog):
         matplotlib window
         """
         try :
-            self.read_raw()
+            self.read_raw(self.rawPath)
         except (AttributeError, FileNotFoundError, OSError) :
             self.show_error("Can't find/read file\n"
                             + "Please verify the path and extension")
@@ -133,7 +133,7 @@ class EpochingWindow(QDialog):
         Initialize the events data and plot the data on a matplotlib window
         """
         try :
-            self.read_events()
+            self.read_events(self.mrkPath[0])
         except (AttributeError, FileNotFoundError, OSError) :
             self.show_error("Can't find/read file\n"
                             + "Please verify the path and extension")
@@ -156,15 +156,30 @@ class EpochingWindow(QDialog):
 
     #------------------------------------------------------------------------
     def choose_save_path(self) :
-        self.savePath, _ = QFileDialog.getSaveFileName(self)
-        try :
-            self.read_raw()
-            self.read_events()
-        except (AttributeError, FileNotFoundError, OSError) :
-            self.show_error("Can't find/read file.\n"
-                            + "Please verify the path and extension")
+        """
+        Choose saving path
+        """
+        if len(self.rawPath) == 1 : # If only one data to treat
+            self.savePath, _ = QFileDialog.getSaveFileName(self)
+            try :
+                self.read_raw(self.rawPath[0])
+                self.read_events(self.mrkPath[0])
+            except (AttributeError, FileNotFoundError, OSError) :
+                self.show_error("Can't find/read file.\n"
+                                + "Please verify the path and extension")
+            else :
+                self.init_epochs().save(self.savePath)
+
         else :
-            self.init_epochs().save(self.savePath)
+            from os.path import basename, splitext, join
+            self.savePath = QFileDialog.getExistingDirectory(self)
+
+            for rawPath, mrkPath in zip(self.rawPath, self.mrkPath) :
+                file_name = splitext(basename(rawPath))[0]
+                self.read_raw(rawPath)
+                self.read_events(mrkPath)
+                savePath = join(self.savePath, file_name + '-epo.fif')
+                self.init_epochs().save(savePath)
 
     #------------------------------------------------------------------------
     def plot_epochs(self) :

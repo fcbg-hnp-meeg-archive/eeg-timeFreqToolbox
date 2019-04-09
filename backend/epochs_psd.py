@@ -91,7 +91,6 @@ class EpochsPSD :
             # If there is not as much positions as the number of Channels
             # we have to eliminate some channels from the data of topomaps
             if no_coord_channel :
-                print('got here')
                 from mne.channels import read_montage
                 from numpy import array
 
