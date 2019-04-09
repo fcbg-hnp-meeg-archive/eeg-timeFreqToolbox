@@ -1,20 +1,18 @@
-# EEG TIME FREQUENCY TOOLBOX 
+# EEG Time-Frequency Toolbox GUI
 
+The Time-Frequency toolbox GUI is a graphic user interface designed to interact with the MNE Library, by using its frequency and time-frequency analysis functions. 
 
 [MNE Library Link](https://martinos.org/mne/dev/index.html)
 
 # Installation
 
-You must have python 3 installed.
+To install the dependencies required for this application, change the working directory to the repository and run the line `pip install -r requirements.txt`. You must have `python3 installed`.
 
-To install the dependencies required for this application, run the line `pip install -r requirements.txt`
-
-To launch the app, simply run the `run_app.py` file.
+To run the application simply run the line `python run_app.py`.
 
 For now, the app can only treat the data to display the power spectrum density of raw eeg files, and epoched eeg files, with the formats `.fif`, `.sef`, `.ep` and `.eph`.
 
 ## Quick Tutorial
-
 
 First import your file which can be either a raw file (format `*.fif` or `*.sef`), or epoched data (format `.epo-fif`).
 
@@ -26,11 +24,11 @@ The application also comes with an handy tool to process raw data files into epo
 
  * **PSD (Power Spectrum Density)** : Which computes the power spectrum density of the signal. You can display the results either in the form of a matrix (Simple plot of individual Channels by Frequencies), or as a topomap (Power of electrode represented on the scalp). It is also possible to run across the different epochs if the file is epoched data.
 
- ![PSD Window](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/assets/psdwindow.png)
+  ![](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/blob/master/assets/psdwindow.png)
 
  * **Average TFR (Average Time-Frequency)** : Which computes the time-frequency representation of the signal averaged over epochs. *This feature only works on epoched data*. You can either display the results on regular time-frequency representation (Time by Frequency), or displays it in different ways (channels by frequencies, or channels by time).
 
-  ![PSD Window](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/assets/tfrwindow.png)
+  ![](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/blob/master/assets/tfrwindow.png )
 
 
 ## Parameters handling
