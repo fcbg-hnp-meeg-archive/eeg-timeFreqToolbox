@@ -87,7 +87,7 @@ class MenuWindow(QMainWindow) :
         Set the values of the combo boxes for file extension,
         coordinates and fourier methods
         """
-        for extension in ['.fif','-epo.fif','.sef', '.ep', '.eph', 'batch'] :
+        for extension in ['.fif','-epo.fif','.sef', '.ep', '.eph'] :
             self.ui.chooseFileType.addItem(extension)
 
         for method in ['No coordinates', 'Use xyz file',
@@ -137,25 +137,28 @@ class MenuWindow(QMainWindow) :
             self.dataType = 'raw'
             self.eeg_data = read_raw_fif(path)
 
-        if extension == '-epo.fif' :
+        elif extension == '-epo.fif' :
             from mne import read_epochs
             self.dataType = 'epochs'
             self.eeg_data = read_epochs(path)
 
-        if extension == '.ep' :
+        elif extension == '.ep' :
             from backend.read import read_ep
             self.dataType = 'raw'
             self.eeg_data = read_ep(path)
 
-        if extension == '.eph' :
+        elif extension == '.eph' :
             from backend.read import read_eph
             self.dataType = 'raw'
             self.eeg_data = read_eph(path)
 
-        if extension == '.sef' :
+        elif extension == '.sef' :
             from backend.read import read_sef
             self.dataType = 'raw'
             self.eeg_data = read_sef(path)
+
+        else :
+            raise ValueError("Invalid Format")
 
     #---------------------------------------------------------------------
     def read_montage(self) :
@@ -437,32 +440,37 @@ class MenuWindow(QMainWindow) :
         """Open window for choosing eeg path and updates the line"""
         self.filePath, _ = QFileDialog.getOpenFileNames(
                                 self,"Choose data path", "")
-        print(self.filePath)
         if len(self.filePath) > 1 :
             from os.path import dirname
             path = 'Batch processing in : ' + dirname(self.filePath[0])
-        else :
+        elif len(self.filePath) == 1 :
             path = self.filePath[0]
+        else :
+            path = ''
         self.ui.lineEdit.setText(path)
         self.eeg_path_changed()
 
     #---------------------------------------------------------------------
     def eeg_path_changed(self) :
         """Gets called when eeg path is changed and reads the data"""
-        extension = self.filePath[0].split("-")[-1].split('.')
+        if len(self.filePath) != 0 :
+            extension = self.filePath[0].split("-")[-1].split('.')
+        else :
+            extension = ['']
 
         if extension[0] == 'epo' :
              extension = '-epo.fif'
         else :
             extension = '.' + extension[-1]
 
-        try :
-            index = self.ui.chooseFileType.findText(extension)
-            self.ui.chooseFileType.setCurrentIndex(index)
-            self.read_eeg_data(self.filePath[0])
-        except :
-            self.show_error("Cannot read eeg data :(\n"
-                            + "Please verifiy the path and extension")
+        if len(self.filePath) != 0 :
+            try :
+                index = self.ui.chooseFileType.findText(extension)
+                self.ui.chooseFileType.setCurrentIndex(index)
+                self.read_eeg_data(self.filePath[0])
+            except :
+                self.show_error("Cannot read eeg data :(\n"
+                                + "Please verifiy the path and extension")
 
     #---------------------------------------------------------------------
     def choose_psd_parameters_path(self) :
