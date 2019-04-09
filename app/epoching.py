@@ -7,12 +7,12 @@ from matplotlib.backends.backend_qt5agg \
 from matplotlib.backends.backend_qt5agg \
     import NavigationToolbar2QT as NavigationToolbar
 
-from app.epoching_UI import EpochingWindowUI
+from app.epoching_UI import Ui_EpochingWindow
 
 class EpochingWindow(QDialog):
     def __init__(self, parent=None):
         super(EpochingWindow, self).__init__(parent)
-        self.ui = EpochingWindowUI()
+        self.ui = Ui_EpochingWindow()
         self.ui.setupUi(self)
         self.ui.retranslateUi(self)
         self.setup_ui()

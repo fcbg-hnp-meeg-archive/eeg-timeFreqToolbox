@@ -9,10 +9,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class EpochingWindowUI(object):
+class Ui_EpochingWindow(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(445, 296)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        Dialog.setFont(font)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.label = QtWidgets.QLabel(Dialog)
@@ -86,6 +89,10 @@ class EpochingWindowUI(object):
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.visuEpochsButton = QtWidgets.QPushButton(Dialog)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.visuEpochsButton.setFont(font)
         self.visuEpochsButton.setObjectName("visuEpochsButton")
         self.horizontalLayout_5.addWidget(self.visuEpochsButton)
         self.saveEpochsButton = QtWidgets.QPushButton(Dialog)
@@ -108,7 +115,7 @@ class EpochingWindowUI(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Raw Data to Epochs cutting window"))
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.label.setText(_translate("Dialog", "Raw Data Path"))
         self.rawPathButton.setText(_translate("Dialog", "Path"))
         self.plotRawButton.setText(_translate("Dialog", "Visualize Raw Data"))
