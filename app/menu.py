@@ -245,7 +245,6 @@ class MenuWindow(QMainWindow) :
         from app.epoching import EpochingWindow
 
         window = EpochingWindow()
-        window.ui.rawLine.setText(self.filePath[0])
         window.exec_()
 
     #=====================================================================

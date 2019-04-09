@@ -8,6 +8,8 @@ from matplotlib.backends.backend_qt5agg \
     import NavigationToolbar2QT as NavigationToolbar
 
 from app.epoching_UI import Ui_EpochingWindow
+from backend.util import blockPrint, enablePrint
+
 
 class EpochingWindow(QDialog):
     def __init__(self, parent=None):
@@ -74,16 +76,37 @@ class EpochingWindow(QDialog):
         """Gets called when choosing raw path"""
         self.rawPath, _ = QFileDialog.getOpenFileNames(
             self, "Choose data path", "Raw Data (*.fif, *.sef)")
-        self.ui.rawLine.setText(self.rawPath[0])
-        self.ui.mrkLine.setText(self.rawPath[0] + '.mrk')
+
+        if len(self.rawPath) > 1 :
+            from os.path import dirname
+            path = 'Batch processing in : ' + dirname(self.rawPath[0])
+            path_mrk = ''
+        elif len(self.rawPath) == 1 :
+            path = self.rawPath[0]
+            path_mrk = path + '.mrk'
+        else :
+            path = ''
+            path_mrk = ''
+        self.ui.rawLine.setText(path)
+        self.ui.mrkLine.setText(path_mrk)
 
     #------------------------------------------------------------------------
     def choose_mrk_path(self) :
         """Gets called when choosing marker path"""
         self.mrkPath, _ = QFileDialog.getOpenFileNames(
             self,"Choose markers path", "mrk files (*.mrk)")
-        self.ui.mrkLine.setText(self.mrkPath[0])
+        if len(self.mrkPath) > 1 :
+            from os.path import dirname
+            path = 'Batch processing in : ' + dirname(self.mrkPath[0])
+        elif len(self.mrkPath) == 1 :
+            path = self.mrkPath[0]
+        else :
+            path = ''
+        self.ui.mrkLine.setText(path)
         self.set_mrk_box()
+
+        if len(self.mrkPath) != len(self.rawPath) :
+            self.show_error('Not the same number of markers and raw data')
 
     #=====================================================================
     # Reading data functions
@@ -118,7 +141,7 @@ class EpochingWindow(QDialog):
         matplotlib window
         """
         try :
-            self.read_raw(self.rawPath)
+            self.read_raw(self.rawPath[0])
         except (AttributeError, FileNotFoundError, OSError) :
             self.show_error("Can't find/read file\n"
                             + "Please verify the path and extension")
@@ -174,12 +197,22 @@ class EpochingWindow(QDialog):
             from os.path import basename, splitext, join
             self.savePath = QFileDialog.getExistingDirectory(self)
 
+            n_files = len(self.rawPath)
+            print('Batch Processing of {} raw data files into Epochs'
+                  .format(n_files))
+            n = 1
             for rawPath, mrkPath in zip(self.rawPath, self.mrkPath) :
+                print('Cutting into Epochs file {} out of {}...'
+                      .format(n, n_files), end = '')
+                blockPrint()
                 file_name = splitext(basename(rawPath))[0]
                 self.read_raw(rawPath)
                 self.read_events(mrkPath)
                 savePath = join(self.savePath, file_name + '-epo.fif')
                 self.init_epochs().save(savePath)
+                n+=1
+                enablePrint()
+                print('done !')
 
     #------------------------------------------------------------------------
     def plot_epochs(self) :
