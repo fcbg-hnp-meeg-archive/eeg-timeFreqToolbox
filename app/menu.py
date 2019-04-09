@@ -28,7 +28,7 @@ class MenuWindow(QMainWindow) :
         self.set_bindings()
         self.init_psd_parameters()
         self.init_tfr_parameters()
-        self.filePath = ''
+        self.filePath = ['']
         self.dataType = None
         self.selected_ch = []
         self.montage = None
@@ -87,7 +87,7 @@ class MenuWindow(QMainWindow) :
         Set the values of the combo boxes for file extension,
         coordinates and fourier methods
         """
-        for extension in ['.fif','-epo.fif','.sef', '.ep', '.eph'] :
+        for extension in ['.fif','-epo.fif','.sef', '.ep', '.eph', 'batch'] :
             self.ui.chooseFileType.addItem(extension)
 
         for method in ['No coordinates', 'Use xyz file',
@@ -129,33 +129,33 @@ class MenuWindow(QMainWindow) :
     #=====================================================================
     # Reading and setting up data
     #=====================================================================
-    def read_eeg_data(self) :
+    def read_eeg_data(self, path) :
         """Read the eeg data depending on the file"""
         extension = self.ui.chooseFileType.currentText()
         if extension == '.fif' :
             from mne.io import read_raw_fif
             self.dataType = 'raw'
-            self.eeg_data = read_raw_fif(self.filePath)
+            self.eeg_data = read_raw_fif(path)
 
         if extension == '-epo.fif' :
             from mne import read_epochs
             self.dataType = 'epochs'
-            self.eeg_data = read_epochs(self.filePath)
+            self.eeg_data = read_epochs(path)
 
         if extension == '.ep' :
             from backend.read import read_ep
             self.dataType = 'raw'
-            self.eeg_data = read_ep(self.filePath)
+            self.eeg_data = read_ep(path)
 
         if extension == '.eph' :
             from backend.read import read_eph
             self.dataType = 'raw'
-            self.eeg_data = read_eph(self.filePath)
+            self.eeg_data = read_eph(path)
 
         if extension == '.sef' :
             from backend.read import read_sef
             self.dataType = 'raw'
-            self.eeg_data = read_sef(self.filePath)
+            self.eeg_data = read_sef(path)
 
     #---------------------------------------------------------------------
     def read_montage(self) :
@@ -235,7 +235,7 @@ class MenuWindow(QMainWindow) :
         from app.epoching import EpochingWindow
 
         window = EpochingWindow()
-        window.ui.rawLine.setText(self.filePath)
+        window.ui.rawLine.setText(self.filePath[0])
         window.exec_()
 
     #=====================================================================
@@ -435,22 +435,31 @@ class MenuWindow(QMainWindow) :
     #=====================================================================
     def choose_eeg_path(self) :
         """Open window for choosing eeg path and updates the line"""
-        self.filePath, _ = QFileDialog.getOpenFileName(
+        self.filePath, _ = QFileDialog.getOpenFileNames(
                                 self,"Choose data path", "")
-        self.ui.lineEdit.setText(self.filePath)
+        print(self.filePath)
+        if len(self.filePath) > 1 :
+            from os.path import dirname
+            path = 'Batch processing in : ' + dirname(self.filePath[0])
+        else :
+            path = self.filePath[0]
+        self.ui.lineEdit.setText(path)
         self.eeg_path_changed()
 
     #---------------------------------------------------------------------
     def eeg_path_changed(self) :
         """Gets called when eeg path is changed and reads the data"""
-        self.filePath = self.ui.lineEdit.text()
-        extension = self.filePath.split("-")[-1].split('.')
-        if extension[0] == 'epo' : extension = '-epo.fif'
-        else : extension = '.' + extension[-1]
+        extension = self.filePath[0].split("-")[-1].split('.')
+
+        if extension[0] == 'epo' :
+             extension = '-epo.fif'
+        else :
+            extension = '.' + extension[-1]
+
         try :
             index = self.ui.chooseFileType.findText(extension)
             self.ui.chooseFileType.setCurrentIndex(index)
-            self.read_eeg_data()
+            self.read_eeg_data(self.filePath[0])
         except :
             self.show_error("Cannot read eeg data :(\n"
                             + "Please verifiy the path and extension")
@@ -515,7 +524,11 @@ class MenuWindow(QMainWindow) :
     #=====================================================================
     def choose_save_path(self) :
         """Open window for choosing save path"""
-        self.savepath, _ = QFileDialog.getSaveFileName(self)
+        if len(self.filePath) == 1 :
+            self.savepath, _ = QFileDialog.getSaveFileName(self)
+        else :
+            self.savepath = QFileDialog.getExistingDirectory(self)
+
         try :
             self.read_parameters()
         except (AttributeError, FileNotFoundError, OSError) :
@@ -530,9 +543,28 @@ class MenuWindow(QMainWindow) :
     def save_matrix(self) :
         """Save the matrix containing the PSD"""
         try :
-            self.psd.save_avg_matrix_sef(self.savepath)
+            if len(self.filePath) == 1 :
+                self.psd.save_avg_matrix_sef(self.savepath)
+
+            else :
+                from os.path import basename, splitext, join
+
+                for path in self.filePath :
+                    file_name = splitext(basename(path))[0]
+                    self.read_eeg_data(path)
+                    if self.dataType == 'epochs' :
+                        self.init_epochs_psd()
+                    if self.dataType == 'raw' :
+                        self.init_raw_psd()
+
+                    savepath = join(self.savepath, file_name + '-PSD.sef')
+                    self.psd.save_avg_matrix_sef(savepath)
+
+        except (AttributeError, FileNotFoundError, OSError) :
+            self.show_error("Can't find/read a file.\n"
+                + "Please verify the path and extension")
         except :
-            self.show_error("Only works with epochs for the moment :(")
+            self.show_error("An error occured ...")
 
     #=====================================================================
     # Display data informations
