@@ -315,11 +315,26 @@ class EpochsPSD :
         else :
             return plt.plot(self.freqs[freq_index_min : freq_index_max], psd)
 
-    #--------------------------------------------------------------------------
-    def save_matrix_txt(self, path) :
-        print("SHOULD SAVE MATRIX FOR EPOCHS")
+    #------------------------------------------------------------------------
+    def channel_index_from_coord(self, x, y) :
+        """
+        Returns the index of the channel with coordinates closest to (x,y)
+        """
+        from numpy import argmin
 
-    #--------------------------------------------------------------------------
+        try :
+            scale, center = self.head_pos['scale'], self.head_pos['center']
+            x, y = x / scale[0] + center[0], y / scale[1] + center[1]
+            distances = [(x-xp)**2 + (y-yp)**2 for xp,yp in self.pos]
+
+            index_coord = argmin(distances)
+            index = self.with_coord [index_coord]
+            return index
+            
+        except :
+            return None
+
+    #------------------------------------------------------------------------
     def save_avg_matrix_sef(self, path) :
         """
         Save the entire matrix in a sef file

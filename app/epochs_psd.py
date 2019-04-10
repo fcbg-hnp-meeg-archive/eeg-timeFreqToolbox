@@ -234,14 +234,21 @@ class EpochsPSDWindow(QDialog):
     #=====================================================================
     def onclick(self, click) :
         """Get coordinates on the canvas and plot the corresponding PSD"""
-        channel_picked = click.ydata
-        ax_picked = click.inaxes
+        if self.plotType == "PSD Matrix" :
+            # Handle clicks on PSD matrix
+            channel_picked = click.ydata - 1
+            ax_picked      = click.inaxes
 
-        if (channel_picked is not None
-                and self.plotType == "PSD Matrix"
-                and click.dblclick) :
-            channel_picked = floor(channel_picked)
-            epoch_picked = self.ui.epochsSlider.value()
+        elif self.plotType == "Topomap" :
+            # Handle clicks on topomaps
+            x, y = click.xdata, click.ydata
+            channel_picked = self.psd.channel_index_from_coord(x, y)
+            ax_picked = click.inaxes
+
+        if (channel_picked is not None and click.dblclick) :
+
+            channel_picked = floor(channel_picked) + 1
+            epoch_picked   = self.ui.epochsSlider.value()
 
             # If both are checked, it depends on which plot user clicked
             if (self.ui.showMean.checkState()

@@ -122,12 +122,15 @@ class RawPSDWindow(QDialog):
     #=====================================================================
     def __onclick__(self, click) :
         """Get coordinates on the canvas and plot the corresponding PSD"""
-        channel_picked = click.ydata
+        if self.plotType == "PSD Matrix" :
+            channel_picked = click.ydata - 1
+        if self.plotType == "Topomap" :
+            x, y = click.xdata, click.ydata
+            channel_picked = self.psd.channel_index_from_coord(x, y)
 
         if (channel_picked is not None
-                and self.plotType == "PSD Matrix"
                 and click.dblclick) :
-            channel_picked = floor(channel_picked)
+            channel_picked = floor(channel_picked) + 1
             self.plot_single_psd(channel_picked, channel_picked)
 
     #---------------------------------------------------------------------
