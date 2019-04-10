@@ -62,8 +62,10 @@ class EpochingWindow(QDialog):
         """Set the marker box"""
         try :
             self.read_events(self.mrkPath[0])
+
         except :
-            print("ERROR")
+            self.show_error('An error occured while loading the events'
+                            + '\nPlease verify the extension')
         else :
             self.ui.chooseMrkBox.clear()
             for item in self.events.get_labels() :
@@ -126,8 +128,9 @@ class EpochingWindow(QDialog):
     def read_events(self, path) :
         """Set up the events in correct class"""
         extension = self.ui.mrkBox.currentText()
-        if extension == '.fif' :
-            return 0
+        if extension == '-eve.fif' :
+            from backend.events import Events
+            self.events = Events(path, type = '-eve.fif')
         if extension == '.mrk' :
             from backend.events import Events
             self.events = Events(path)
@@ -184,14 +187,14 @@ class EpochingWindow(QDialog):
         """
         if len(self.rawPath) == 1 : # If only one data to treat
             self.savePath, _ = QFileDialog.getSaveFileName(self)
-            try :
-                self.read_raw(self.rawPath[0])
-                self.read_events(self.mrkPath[0])
-            except (AttributeError, FileNotFoundError, OSError) :
-                self.show_error("Can't find/read file.\n"
-                                + "Please verify the path and extension")
-            else :
-                self.init_epochs().save(self.savePath)
+
+            print('Saving one file ...')
+            blockPrint()
+            self.read_raw(self.rawPath[0])
+            self.read_events(self.mrkPath[0])
+            self.init_epochs().save(self.savePath)
+            enablePrint()
+            print('done !')
 
         else :
             from os.path import basename, splitext, join
@@ -217,8 +220,8 @@ class EpochingWindow(QDialog):
     #------------------------------------------------------------------------
     def plot_epochs(self) :
         try :
-            self.read_raw()
-            self.read_events()
+            self.read_raw(self.rawPath[0])
+            self.read_events(self.mrkPath[0])
         except (AttributeError, FileNotFoundError, OSError) :
             self.show_error("Can't find/read file.\n"
                             + "Please verify the path and extension")

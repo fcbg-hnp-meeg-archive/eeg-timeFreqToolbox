@@ -30,16 +30,27 @@ class Events :
     #------------------------------------------------------------------------
     def __init__(self, path, type = 'mrk') :
         """Init mrk values in a dictionnary"""
-        stim   = np.loadtxt(path, skiprows = 1, usecols = (0,1),
-                            dtype = np.dtype(int))
-        labels = np.loadtxt(path, skiprows = 1, usecols = 2,
-                            dtype = np.dtype(str))
+        if type == 'mrk' :
+            stim   = np.loadtxt(path, skiprows = 1, usecols = (0,1),
+                                dtype = np.dtype(int))
+            labels = np.loadtxt(path, skiprows = 1, usecols = 2,
+                                dtype = np.dtype(str))
+
+        if type == "-eve.fif" :
+            from mne import read_events
+            events = read_events(path)
+            stim = np.transpose(np.array([events[:, 0], events[:, 0]]))
+            labels = np.array([str(label) for label in events[:, 2]])
+        print(stim)
 
         self.dic = dict.fromkeys(labels)
-        for key, _ in self.dic.items() : self.dic[key] = []
+        for key, _ in self.dic.items() :
+            self.dic[key] = []
         for k in range(len(stim)) :
             self.dic[labels[k]].append(stim[k, :])
         return None
+
+
 
     #------------------------------------------------------------------------
     def plot(self) :
@@ -81,8 +92,10 @@ class Events :
         anchor    : where we anchor the event (beginning or end)
         offset    : how we offset it
         """
-        if anchor == 'beginning' : index = 0
-        else                     : index = 1
+        if anchor == 'beginning' :
+            index = 0
+        else :
+            index = 1
         events = [[event[index] , 0, 0] for event in self.dic[event_label]]
         return np.array(events, dtype = np.dtype(int))
 
