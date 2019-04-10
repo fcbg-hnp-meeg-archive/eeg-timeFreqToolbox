@@ -45,7 +45,6 @@ def batch_process_epochs(path, **parameters) :
         psd = EpochsPSD(epochs, **parameters)
         psd.save_avg_matrix_sef()
 
-
 def blockPrint():
     import sys, os
     sys.stdout = open(os.devnull, 'w')
@@ -53,3 +52,28 @@ def blockPrint():
 def enablePrint():
     import sys, os
     sys.stdout = sys.__stdout__
+
+def preview(mne_data, figure) :
+    """
+    Plot a quick preview of the data with the first 5 channels on figure
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    data = mne_data.get_data()
+    times = mne_data.times
+    if len(data.shape) == 3 :
+        data = np.mean(data, axis = 0)
+    data = data[0:5, :]
+    if data.shape[1] > 1000 :
+        data = data[:, 0:1000]
+        times = times[0:1000]
+
+    for i in range(5) :
+        ax = figure.add_subplot(5, 1, i+1)
+        ax.plot(times, data[i, :])
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax.axis('off')
+    plt.subplots_adjust(wspace=0, hspace=0, top = 1, right = 1,
+                                   left = 0, bottom = 0)

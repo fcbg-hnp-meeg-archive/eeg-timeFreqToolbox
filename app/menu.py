@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 from matplotlib.pyplot import close, show
 from app.menu_UI import Ui_MenuWindow
@@ -28,6 +30,7 @@ class MenuWindow(QMainWindow) :
         """Setup the ui with initial values and bindings"""
         self.set_boxes()
         self.set_bindings()
+        self.set_preview_canvas()
         self.init_psd_parameters()
         self.init_tfr_parameters()
         self.filePath = ['']
@@ -52,9 +55,6 @@ class MenuWindow(QMainWindow) :
 
         (self.ui.plotData.clicked
         .connect(self.plot_data))
-
-        (self.ui.displayDataButton.clicked
-        .connect(self.display_data_infos))
 
         (self.ui.psdParametersButton.clicked
         .connect(self.choose_psd_parameters_path))
@@ -82,6 +82,9 @@ class MenuWindow(QMainWindow) :
 
         (self.ui.pushButton.clicked
         .connect(self.open_channel_picker))
+
+        (self.ui.showMontageButton.clicked
+        .connect(self.show_montage))
 
     #------------------------------------------------------------------------
     def set_boxes(self) :
@@ -128,6 +131,16 @@ class MenuWindow(QMainWindow) :
             text = text + "\nwidth=1\nn_fft=Default"
         self.ui.tfrParametersText.setText(text)
 
+    #---------------------------------------------------------------------
+    def set_preview_canvas(self) :
+        """setup canvas for matplotlib"""
+        import matplotlib.pyplot as plt
+        self.ui.figurePreview = plt.figure()
+        self.ui.figurePreview.patch.set_facecolor('None')
+        self.ui.preview = FigureCanvas(self.ui.figurePreview)
+        self.ui.preview.setStyleSheet("background-color:transparent;")
+        self.ui.previewLayout.addWidget(self.ui.preview)
+
     #=====================================================================
     # Reading and setting up data
     #=====================================================================
@@ -165,6 +178,8 @@ class MenuWindow(QMainWindow) :
         else :
             raise ValueError("Invalid Format")
 
+        self.set_informations()
+        self.draw_preview()
         enablePrint()
 
     #---------------------------------------------------------------------
@@ -246,6 +261,28 @@ class MenuWindow(QMainWindow) :
 
         window = EpochingWindow()
         window.exec_()
+
+    #=====================================================================
+    # Set preview of data
+    #=====================================================================
+    def draw_preview(self) :
+        """Draw a little preview of the data"""
+        from backend.util import preview
+        try :
+            self.ui.figurePreview.clear()
+            preview(self.eeg_data, self.ui.figurePreview)
+            self.ui.preview.draw()
+        except :
+            pass
+
+    def show_montage(self) :
+        import matplotlib.pyplot as plt
+        try :
+            plt.close('all')
+            self.ui.figureMontage = self.montage.plot(show = False)
+            plt.show()
+        except :
+            pass
 
     #=====================================================================
     # Open PSD Visualizer
@@ -608,21 +645,11 @@ class MenuWindow(QMainWindow) :
     #=====================================================================
     # Display data informations
     #=====================================================================
-    def display_data_infos(self) :
-        """Display informations about data on a pop-up window"""
-        try :
-            self.read_parameters()
-            self.show_infos(self.init_info_string())
-        except (AttributeError, FileNotFoundError, OSError) :
-            self.show_error("Can't find/read file :(\n"
-                            + "Please verify the path and extension")
-
-    # ---------------------------------------------------------------------
     def init_info_string(self) :
         """Init a string with informations about data"""
         sfreq      = self.eeg_data.info["sfreq"]
         n_channels = self.eeg_data.info["nchan"]
-        infos1     = (("<li><b>Sampling Frequency:</b> {}"
+        infos1     = (("<li><b>Sampling Frequency:</b> {}Hz"
                       + "<li><b>Number of Channels:</b> {}")
                       .format(sfreq, n_channels))
         if self.dataType == 'raw' :
@@ -639,6 +666,14 @@ class MenuWindow(QMainWindow) :
                       .format(times[-1] - times[0]))
 
         return "<ul>" + infos1 + infos2 + infos3 + "</ul>"
+
+    # ---------------------------------------------------------------------
+    def set_informations(self) :
+        """Update informations in the window"""
+        try :
+            self.ui.informationLabel.setText(self.init_info_string())
+        except :
+            pass
 
     #=====================================================================
     # Channel picker
