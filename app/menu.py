@@ -275,6 +275,7 @@ class MenuWindow(QMainWindow) :
         except :
             pass
 
+    #---------------------------------------------------------------------
     def show_montage(self) :
         import matplotlib.pyplot as plt
         try :
@@ -647,25 +648,30 @@ class MenuWindow(QMainWindow) :
     #=====================================================================
     def init_info_string(self) :
         """Init a string with informations about data"""
-        sfreq      = self.eeg_data.info["sfreq"]
-        n_channels = self.eeg_data.info["nchan"]
-        infos1     = (("<li><b>Sampling Frequency:</b> {}Hz"
-                      + "<li><b>Number of Channels:</b> {}")
-                      .format(sfreq, n_channels))
-        if self.dataType == 'raw' :
-            n_times = self.eeg_data.n_times
-            infos2 = "<li><b>Time points:</b> {}</li>".format(n_times)
-            infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
-                      .format((n_times / sfreq)))
+        if len(self.filePath) > 1 :
+            infos = ('<li><b>Batch processing:</b> {} files selected </li>'
+                      .format(len(self.filePath)))
+        else :
+            sfreq      = self.eeg_data.info["sfreq"]
+            n_channels = self.eeg_data.info["nchan"]
+            infos1     = (("<li><b>Sampling Frequency:</b> {}Hz"
+                          + "<li><b>Number of Channels:</b> {}")
+                          .format(sfreq, n_channels))
+            if self.dataType == 'raw' :
+                n_times = self.eeg_data.n_times
+                infos2 = "<li><b>Time points:</b> {}</li>".format(n_times)
+                infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
+                          .format((n_times / sfreq)))
 
-        if self.dataType == 'epochs' :
-            times  = self.eeg_data.times
-            infos2 = ("<li><b>Time points per Epoch:</b> {} </li>"
-                     .format(len(times)))
-            infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
-                      .format(times[-1] - times[0]))
+            if self.dataType == 'epochs' :
+                times  = self.eeg_data.times
+                infos2 = ("<li><b>Time points per Epoch:</b> {} </li>"
+                         .format(len(times)))
+                infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
+                          .format(times[-1] - times[0]))
+            infos = infos1 + infos2 + infos3
 
-        return "<ul>" + infos1 + infos2 + infos3 + "</ul>"
+        return "<ul>" + infos + "</ul>"
 
     # ---------------------------------------------------------------------
     def set_informations(self) :
