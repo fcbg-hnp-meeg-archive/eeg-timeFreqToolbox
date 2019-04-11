@@ -74,7 +74,7 @@ class MenuWindow(QMainWindow) :
         (self.ui.tfrMethodBox.currentIndexChanged
         .connect(self.init_tfr_parameters))
 
-        (self.ui.epochingButton.clicked
+        (self.ui.actionConvert_Raw_to_Epochs.triggered
         .connect(self.open_epoching_window))
 
         (self.ui.electrodeMontage.currentTextChanged
@@ -85,6 +85,9 @@ class MenuWindow(QMainWindow) :
 
         (self.ui.showMontageButton.clicked
         .connect(self.show_montage))
+
+        (self.ui.actionAbout_Parameters.triggered
+        .connect(self.help_parameters))
 
     #------------------------------------------------------------------------
     def set_boxes(self) :
@@ -723,3 +726,12 @@ class MenuWindow(QMainWindow) :
         info.setInformativeText(msg)
         info.setWindowTitle("Data Informations")
         info.exec_()
+
+    #=====================================================================
+    # Menu functions
+    #=====================================================================
+    def help_parameters(self) :
+        import webbrowser
+        webbrowser.open_new_tab('https://github.com/fcbg-hnp/eeg-timeFreqToolbox/blob/master/help_parameters.md')
+
+    
