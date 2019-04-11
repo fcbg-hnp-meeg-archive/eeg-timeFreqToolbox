@@ -99,7 +99,8 @@ class MenuWindow(QMainWindow) :
             self.ui.chooseFileType.addItem(extension)
 
         for method in ['No coordinates', 'Use xyz file',
-                       'standard_1005', 'standard_1020'] :
+                       'standard_1005', 'standard_1020',
+                       'Imported from file'] :
             self.ui.electrodeMontage.addItem(method)
 
         self.ui.psdMethod.addItem('multitaper')
@@ -183,7 +184,36 @@ class MenuWindow(QMainWindow) :
 
         self.set_informations()
         self.draw_preview()
+
         enablePrint()
+        if extension == '.fif' or extension == '-epo.fif' :
+            # Still not super confident about this part, the fif
+            # has to be nicely initialized
+            from numpy import array, isnan
+            from mne.channels import Montage
+            try :
+                pos = array([
+                        self.eeg_data.info['chs'][i]['loc'][:3]
+                        for i in range(self.eeg_data.info['nchan'])
+                      ])
+                print(pos)
+                print(isnan(pos).all())
+
+                if not isnan(pos).all() :
+                    selection = [i for i in range(
+                                 self.eeg_data.info['nchan'])]
+                    self.montage = Montage(pos,
+                                           self.eeg_data.info['ch_names'],
+                                           selection = selection,
+                                           kind = 'custom')
+                    index = self.ui.electrodeMontage.findText(
+                                'Imported from file')
+                    self.ui.electrodeMontage.setCurrentIndex(index)
+                    print('Montage initialized from file')
+                else :
+                    print('No montage initialized in file')
+            except :
+                print('No montage initialized in file')
 
     #---------------------------------------------------------------------
     def read_montage(self) :
@@ -195,6 +225,9 @@ class MenuWindow(QMainWindow) :
             from backend.util import xyz_to_montage
             self.montage = xyz_to_montage(self.ui.xyzPath.text())
             self.eeg_data.set_montage(self.montage)
+
+        elif montage == 'Imported from file' :
+            pass
 
         elif montage != 'No coordinates' :
             from mne.channels import read_montage
@@ -733,5 +766,3 @@ class MenuWindow(QMainWindow) :
     def help_parameters(self) :
         import webbrowser
         webbrowser.open_new_tab('https://github.com/fcbg-hnp/eeg-timeFreqToolbox/blob/master/help_parameters.md')
-
-    
