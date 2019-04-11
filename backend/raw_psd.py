@@ -65,8 +65,11 @@ class RawPSD :
         else :
             self.picks = list(range(0, len(raw.info['ch_names'])))
         for bad in raw.info['bads'] :
-            bad_pick = raw.info['ch_names'].index(bad)
-            self.picks.remove(bad_pick)
+            try :
+                bad_pick = raw.info['ch_names'].index(bad)
+                self.picks.remove(bad_pick)
+            except :
+                pass
 
         if montage is not None :
             # First we create variable head_pos for a correct plotting

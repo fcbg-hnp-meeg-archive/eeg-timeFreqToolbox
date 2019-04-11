@@ -70,8 +70,11 @@ class EpochsPSD :
         else :
             self.picks = list(range(0, len(epochs.info['ch_names'])))
         for bad in epochs.info['bads'] :
-            bad_pick = epochs.info['ch_names'].index(bad)
-            self.picks.remove(bad_pick)
+            try :
+                bad_pick = epochs.info['ch_names'].index(bad)
+                self.picks.remove(bad_pick)
+            except :
+                pass
 
         if montage is not None :
             # First we create variable head_pos for a correct plotting
