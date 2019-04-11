@@ -65,11 +65,13 @@ class EpochsPSD :
         self.n_overlap          = kwargs.get('n_overlap', 0)
         self.cmap               = 'inferno'
 
-
         if picks is not None :
             self.picks = picks
         else :
-            self.picks = range(0, len(epochs.info['ch_names']))
+            self.picks = list(range(0, len(epochs.info['ch_names'])))
+        for bad in epochs.info['bads'] :
+            bad_pick = epochs.info['ch_names'].index(bad)
+            self.picks.remove(bad_pick)
 
         if montage is not None :
             # First we create variable head_pos for a correct plotting
@@ -330,7 +332,7 @@ class EpochsPSD :
             index_coord = argmin(distances)
             index = self.with_coord [index_coord]
             return index
-            
+
         except :
             return None
 
