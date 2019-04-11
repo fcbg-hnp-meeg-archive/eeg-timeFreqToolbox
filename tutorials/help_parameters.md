@@ -14,7 +14,7 @@ You can also checkout the documentation from MNE to gain knowledge about the dif
 
 ##### Multitaper Method
 
-`bandwidth` : Time-Bandwidth product. *A high Time-Bandwidth product enables more smoothing, and a better frequency precision.*
+`bandwidth` : Time-Bandwidth product. *A high Time-Bandwidth product enables more time smoothing, and a better frequency precision.*
 
 ##### Welch Method
 
