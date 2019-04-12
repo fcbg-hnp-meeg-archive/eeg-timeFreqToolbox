@@ -1,3 +1,4 @@
+#---------------------------------------------------------------------
 def xyz_to_montage(path) :
     """Reads and convert xyz positions to a mne montage type"""
     from mne.channels import Montage
@@ -11,7 +12,7 @@ def xyz_to_montage(path) :
     return Montage(coord, names, 'standard_1005',
                    selection = [i for i in range(n)])
 
-
+#---------------------------------------------------------------------
 def eeg_to_montage(eeg) :
     """Returns an instance of montage from an eeg file"""
     from numpy import array, isnan
@@ -28,6 +29,7 @@ def eeg_to_montage(eeg) :
     else :
         return None
 
+#---------------------------------------------------------------------
 def float_(value) :
     """float with handle of none values"""
     if value is None :
@@ -35,6 +37,7 @@ def float_(value) :
     else :
         return float(value)
 
+#---------------------------------------------------------------------
 def int_(value) :
     """int with handle of none values"""
     if value is None :
@@ -42,6 +45,7 @@ def int_(value) :
     else :
         return int(value)
 
+#---------------------------------------------------------------------
 def batch_process_epochs(path, **parameters) :
     """This function batch processes a serie of eeg files, and saves it as a
     PSD of format out. This take an argument a path leading to a folder
@@ -94,3 +98,27 @@ def preview(mne_data, figure) :
         ax.axis('off')
     plt.subplots_adjust(wspace=0, hspace=0, top = 1, right = 1,
                                    left = 0, bottom = 0)
+
+#---------------------------------------------------------------------
+def init_info_string(eeg_data) :
+    """Init a string with informations about data"""
+    sfreq      = eeg_data.info["sfreq"]
+    n_channels = eeg_data.info["nchan"]
+    infos1     = (("<li><b>Sampling Frequency:</b> {}Hz"
+                  + "<li><b>Number of Channels:</b> {}")
+                  .format(sfreq, n_channels))
+    if len(eeg_data.get_data()) == 2 :
+        n_times = eeg_data.n_times
+        infos2 = "<li><b>Time points:</b> {}</li>".format(n_times)
+        infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
+                  .format((n_times / sfreq)))
+
+    else :
+        times  = eeg_data.times
+        infos2 = ("<li><b>Time points per Epoch:</b> {} </li>"
+                 .format(len(times)))
+        infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
+                  .format(times[-1] - times[0]))
+
+    infos = infos1 + infos2 + infos3
+    return "<ul>" + infos + "</ul>"

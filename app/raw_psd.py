@@ -5,8 +5,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
 from math import floor
-
-
 from app.raw_psd_UI import Ui_RawPSDWindow
 
 class RawPSDWindow(QDialog):
