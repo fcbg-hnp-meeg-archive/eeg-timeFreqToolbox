@@ -11,6 +11,23 @@ def xyz_to_montage(path) :
     return Montage(coord, names, 'standard_1005',
                    selection = [i for i in range(n)])
 
+
+def eeg_to_montage(eeg) :
+    """Returns an instance of montage from an eeg file"""
+    from numpy import array, isnan
+    from mne.channels import Montage
+
+    pos = array([eeg.info['chs'][i]['loc'][:3]
+                 for i in range(eeg.info['nchan'])
+          ])
+    if not isnan(pos).all() :
+        selection = [i for i in range(eeg.info['nchan'])]
+        montage = Montage(pos, eeg.info['ch_names'],
+                          selection = selection, kind = 'custom')
+        return montage
+    else :
+        return None
+
 def float_(value) :
     """float with handle of none values"""
     if value is None :

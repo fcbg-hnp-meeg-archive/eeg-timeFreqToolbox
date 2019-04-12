@@ -191,29 +191,12 @@ class MenuWindow(QMainWindow) :
             # has to be nicely initialized
             from numpy import array, isnan
             from mne.channels import Montage
-            try :
-                pos = array([
-                        self.eeg_data.info['chs'][i]['loc'][:3]
-                        for i in range(self.eeg_data.info['nchan'])
-                      ])
-                print(pos)
-                print(isnan(pos).all())
+            from backend.util import eeg_to_montage
 
-                if not isnan(pos).all() :
-                    selection = [i for i in range(
-                                 self.eeg_data.info['nchan'])]
-                    self.montage = Montage(pos,
-                                           self.eeg_data.info['ch_names'],
-                                           selection = selection,
-                                           kind = 'custom')
-                    index = self.ui.electrodeMontage.findText(
-                                'Imported from file')
-                    self.ui.electrodeMontage.setCurrentIndex(index)
-                    print('Montage initialized from file')
-                else :
-                    print('No montage initialized in file')
-            except :
-                print('No montage initialized in file')
+            self.montage = eeg_to_montage(self.eeg_data)
+            index = self.ui.electrodeMontage.findText(
+                        'Imported from file')
+            self.ui.electrodeMontage.setCurrentIndex(index)
 
     #---------------------------------------------------------------------
     def read_montage(self) :
