@@ -59,6 +59,9 @@ class TimeFreq(QMainWindow):
         (self.ui.tfrButton.clicked
         .connect(self.open_tfr_visualizer))
 
+        (self.ui.savePsdButton.clicked
+        .connect(self.choose_save_path))
+
     #---------------------------------------------------------------------
     def choose_data_path(self) :
         """Open window for choosing data path and updates the line"""
@@ -374,6 +377,7 @@ class TimeFreq(QMainWindow):
             psdVisualizer = AvgTFRWindow(self.avgTFR)
             psdVisualizer.show()
 
+
     #---------------------------------------------------------------------
     # Read Parameters function
     #---------------------------------------------------------------------
@@ -398,50 +402,56 @@ class TimeFreq(QMainWindow):
                                 + "param_id = values")
         self.params = dic
 
+
     #---------------------------------------------------------------------
-    # Batch processing
+    # Saving
+    #---------------------------------------------------------------------
+    def choose_save_path(self) :
+        """Open window for choosing save path"""
+        if len(self.filePaths) == 1 :
+            self.savepath, _ = QFileDialog.getSaveFileName(self)
+        else :
+            self.savepath = QFileDialog.getExistingDirectory(self)
+
+        try :
+            self.read_parameters()
+        except (AttributeError, FileNotFoundError, OSError) :
+            print("Can't find/read file :(\n"
+                            + "Please verify the path and extension")
+        else :
+            self.save_matrix()
+
     #---------------------------------------------------------------------
     def save_matrix(self) :
         """Save the matrix containing the PSD"""
 
-        try :
-            n_files = len(self.filePaths)
-            if n_files == 1 :
-                print('Saving one file ...', end = '')
-                blockPrint()
+        n_files = len(self.filePaths)
+        if n_files == 1 :
+            print('Saving one file ...', end = '')
+            if self.type == 'epochs' :
+                self.init_epochs_psd()
+            if self.type == 'raw'    :
+                self.init_raw_psd()
+            self.psd.save_avg_matrix_sef(self.savepath)
+            print('done !')
+
+        else :
+            from os.path import basename, splitext, join
+
+            print('Batch Processing of {} files'
+                  .format(len(self.filePaths)))
+            n = 0
+            for path in self.filePaths :
+                print('Saving file {} out of {} ...'
+                      .format(n+1, n_files), end = '')
+                file_name = splitext(basename(path))[0]
+                self.ui.dataFilesBox.setCurrentIndex(0)
                 if self.type == 'epochs' :
                     self.init_epochs_psd()
-                if self.type == 'raw'    :
+                if self.type == 'raw' :
                     self.init_raw_psd()
-                enablePrint()
-                self.psd.save_avg_matrix_sef(self.savepath)
+
+                savepath = join(self.savepath, file_name + '-PSD.sef')
+                self.psd.save_avg_matrix_sef(savepath)
                 print('done !')
-
-            else :
-                from os.path import basename, splitext, join
-
-                print('Batch Processing of {} files'
-                      .format(len(self.filePaths)))
-                n = 1
-                for path in self.filePaths :
-                    print('Saving file {} out of {} ...'
-                          .format(n, n_files), end = '')
-                    blockPrint()
-                    file_name = splitext(basename(path))[0]
-                    self.read_eeg_data(path)
-                    if self.type == 'epochs' :
-                        self.init_epochs_psd()
-                    if self.type == 'raw' :
-                        self.init_raw_psd()
-
-                    savepath = join(self.savepath, file_name + '-PSD.sef')
-                    self.psd.save_avg_matrix_sef(savepath)
-                    enablePrint()
-                    print('done !')
-                    n+=1
-
-        except (AttributeError, FileNotFoundError, OSError) :
-            self.show_error("Can't find/read a file.\n"
-                + "Please verify the path and extension")
-        except :
-            self.show_error("An error occured ...")
+                n+=1
