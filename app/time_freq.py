@@ -125,8 +125,11 @@ class TimeFreq(QMainWindow):
     #---------------------------------------------------------------------
     def plot_data(self) :
         """Plot the data"""
+        from matplotlib.pyplot import close, show
         try :
-            self.data.plot(scalings = 'auto')
+            close('all')
+            self.data.plot(block = True, scalings = 'auto')
+            show()
         except AttributeError :
             print('No data initialized')
 
