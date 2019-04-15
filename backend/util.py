@@ -46,34 +46,16 @@ def int_(value) :
         return int(value)
 
 #---------------------------------------------------------------------
-def batch_process_epochs(path, **parameters) :
-    """This function batch processes a serie of eeg files, and saves it as a
-    PSD of format out. This take an argument a path leading to a folder
-    containing all the files of epochs of format epo-fif"""
-
-    import os
-    from backend.epochs_psd import EpochsPSD
-    from mne import read_epochs
-
-    # Init a value files with all the paths of the files to process
-    if path.endswith('-epo.fif') :
-        files_path = [path]
-    else :
-        files = [path + file for file in os.lisdir(path)]
-
-    for file in files :
-        epochs = read_epochs(file)
-        psd = EpochsPSD(epochs, **parameters)
-        psd.save_avg_matrix_sef()
-
 def blockPrint():
     import sys, os
     sys.stdout = open(os.devnull, 'w')
 
+#---------------------------------------------------------------------
 def enablePrint():
     import sys, os
     sys.stdout = sys.__stdout__
 
+#---------------------------------------------------------------------
 def preview(mne_data, figure) :
     """
     Plot a quick preview of the data with the first 5 channels on figure
