@@ -5,10 +5,10 @@ import os
 
 print('CURRENT DIRECTORY FOLDER : ', os.getcwd())
 
-from app.menu import MenuWindow
+from app.preprocess import PreprocessWindow
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main = MenuWindow()
+    main = PreprocessWindow()
     main.show()
     sys.exit(app.exec_())

@@ -94,7 +94,7 @@ class TimeFreq(QMainWindow):
         """Reads the data from path"""
         index = self.ui.dataFilesBox.currentIndex()
         try :
-            if self.filePaths[0].endswith('-epo.fif') :
+            if self.filePaths[index].endswith('-epo.fif') :
                 from mne import read_epochs
                 self.type = 'epochs'
                 self.data = read_epochs(self.filePaths[index])
@@ -155,6 +155,7 @@ class TimeFreq(QMainWindow):
         _init_psd_parameters(self)
         _init_tfr_parameters(self)
 
+
     #---------------------------------------------------------------------
     # Channel picking functions
     #---------------------------------------------------------------------
@@ -169,6 +170,7 @@ class TimeFreq(QMainWindow):
     def set_selected_ch(self, selected) :
         """Set selected channels"""
         self.selected_ch = selected
+
 
     #---------------------------------------------------------------------
     # Open PSD Visualizer
@@ -193,6 +195,7 @@ class TimeFreq(QMainWindow):
                 print("Please initialize the EEG data "
                                 + "before proceeding.")
 
+
     #---------------------------------------------------------------------
     # Open TFR Visualizer
     #---------------------------------------------------------------------
@@ -208,6 +211,7 @@ class TimeFreq(QMainWindow):
         else :
             from backend.time_freq import _open_tfr_visualizer
             _open_tfr_visualizer(self)
+
 
     #---------------------------------------------------------------------
     # Saving

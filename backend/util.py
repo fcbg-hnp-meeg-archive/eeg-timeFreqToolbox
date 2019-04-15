@@ -62,6 +62,7 @@ def preview(mne_data, figure) :
     """
     import numpy as np
     import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
 
     data = mne_data.get_data()
     times = mne_data.times
@@ -71,10 +72,11 @@ def preview(mne_data, figure) :
     if data.shape[1] > 1000 :
         data = data[:, 0:1000]
         times = times[0:1000]
+    color = cm.rainbow(np.linspace(0,1,5))
 
-    for i in range(5) :
+    for i,c in zip(range(5), color) :
         ax = figure.add_subplot(5, 1, i+1)
-        ax.plot(times, data[i, :])
+        ax.plot(times, data[i, :], c = c)
         ax.set_xticklabels([])
         ax.set_yticklabels([])
         ax.axis('off')

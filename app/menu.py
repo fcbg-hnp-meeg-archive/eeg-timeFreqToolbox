@@ -112,15 +112,11 @@ class MenuWindow(QMainWindow) :
     #---------------------------------------------------------------------
     def init_psd_parameters(self) :
         """Set the parameters in the parameters text slot"""
-
         text = "fmin=0\nfmax=100\ntmin=Default\ntmax=Default\n"
-
         if self.ui.psdMethod.currentText() == 'welch' :
             text = text + "n_fft=Default\nn_per_seg=Default\nn_overlap=0"
-
         if self.ui.psdMethod.currentText() == 'multitaper' :
             text = text + "bandwidth=4"
-
         self.ui.psdParametersText.setText(text)
 
     #---------------------------------------------------------------------
