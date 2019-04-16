@@ -103,9 +103,9 @@ def _init_nfft(self) :
     n_fft    = int_(self.params.get('n_fft', None))
     if n_fft is None :
         if self.type == 'raw' :
-             n_fft = self.data.n_times
+             n_fft = min(self.data.n_times, 2048)
         if self.type == 'epochs' :
-            n_fft = len(self.data.times)
+            n_fft = min(len(self.data.times), 2048)
     return n_fft
 
 #---------------------------------------------------------------------
