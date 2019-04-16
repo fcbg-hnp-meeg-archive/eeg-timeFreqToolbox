@@ -10,17 +10,14 @@ To install the dependencies required for this application, change the working di
 
 To run the application simply run the line `python run_app.py`.
 
-For now, the app can only treat the data to display the power spectrum density of raw eeg files, and epoched eeg files, with the formats `.fif`, `.sef`, `.ep` and `.eph`.
+For now, the app can only treat the data to display the power spectrum density of raw eeg files, and epoched eeg files, with the formats `.fif`. If you want to treat another format, please save it as `fif` using a preprocessing toolbox before using this toolbox.
 
 ## Quick Tutorial
 
 First import your file which can be either a raw file (format `*.fif` or `*.sef`), or epoched data (format `.epo-fif`).
 
-The application also comes with an handy tool to process raw data files into epochs data with the help of a marker file (of format `*.mrk`). Just click on the `Cut into Epochs` button, and save your epochs data as a `*-epo.fif` file.
+This toolbox does not perform any preprocessing in the file, so you have to preprocess the signal before using it in this toolbox, by removing and interpolating bad channels, applyings correct filters and applying a montage to display the topomaps.
 
- For the topomaps plot you can either choose premade electrode setting from `mne` (If your file comes with corresponding 1005 or 1020 system names), or import the `*.xyz` file containing the 3D coordinates of the data in the electrode labeling menu.
-
- Then you have two choiceS of data visualization :
 
  * **PSD (Power Spectrum Density)** : Which computes the power spectrum density of the signal. You can display the results either in the form of a matrix (Simple plot of individual Channels by Frequencies), or as a topomap (Power of electrode represented on the scalp). It is also possible to run across the different epochs if the file is epoched data.
 
