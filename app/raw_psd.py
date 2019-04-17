@@ -144,6 +144,11 @@ class RawPSDWindow(QDialog):
         ax.set_title('PSD of channel {}'
         .format(self.psd.info['ch_names'][index_ch]))
         self.set_ax_single_psd(ax)
+        win = fig.canvas.manager.window
+        win.setWindowModality(Qt.WindowModal)
+        win.setWindowTitle("PSD")
+        win.findChild(QStatusBar).hide()
+        fig.show()
 
     #=====================================================================
     # Adjusting the plots
@@ -164,7 +169,6 @@ class RawPSDWindow(QDialog):
                      self.psd.freqs[self.f_index_max]])
         ax.set_xlabel('Frequency (Hz)')
         ax.set_ylabel('Power (µV²/Hz)')
-        plt.show()
 
     #=====================================================================
     # Updating the canvas functions
