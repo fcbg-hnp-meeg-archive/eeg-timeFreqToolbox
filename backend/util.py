@@ -30,17 +30,6 @@ def int_(value) :
         return None
     else :
         return int(value)
-
-#---------------------------------------------------------------------
-def blockPrint():
-    import sys, os
-    sys.stdout = open(os.devnull, 'w')
-
-#---------------------------------------------------------------------
-def enablePrint():
-    import sys, os
-    sys.stdout = sys.__stdout__
-
 #---------------------------------------------------------------------
 def init_info_string(eeg_data) :
     """Init a string with informations about data"""

@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from app.time_freq_UI import Ui_TimeFreq
-from backend.util import blockPrint, enablePrint
 
 class TimeFreq(QMainWindow):
     def __init__(self, parent=None):

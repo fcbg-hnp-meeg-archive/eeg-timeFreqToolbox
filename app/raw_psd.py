@@ -138,7 +138,7 @@ class RawPSDWindow(QDialog):
         ax.patch.set_alpha(0)
         ax.set_title("PSD", fontsize = 15, fontweight = 'light')
         self.set_ax_single_psd(ax)
-        self.ui.figure.subplots_adjust(top = 0.9, right = 0.9,
+        self.ui.figure.subplots_adjust(top = 0.85, right = 0.8,
                                        left = 0.1, bottom = 0.1)
         self.ui.canvas.draw()
 

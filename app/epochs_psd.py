@@ -72,12 +72,12 @@ class EpochsPSDWindow(QDialog):
         self.ui.figure.patch.set_facecolor('None')
         self.ui.canvas = FigureCanvas(self.ui.figure)
         self.ui.canvas.setStyleSheet("background-color:transparent;")
-        cid = self.ui.canvas.mpl_connect('button_press_event', self.onclick)
-        self.cursor = ()
         # Matplotlib toolbar
         self.ui.toolbar = NavigationToolbar(self.ui.canvas, self)
         self.ui.figureLayout.addWidget(self.ui.toolbar)
         self.ui.figureLayout.addWidget(self.ui.canvas)
+        self.ui.canvas.mpl_connect('button_press_event', self.onclick)
+        self.ui.canvas.mpl_connect('pick_event', self.onclick_pick)
 
     #=====================================================================
     # Main Plotting function
@@ -118,10 +118,13 @@ class EpochsPSDWindow(QDialog):
                                        left = 0.1, bottom = 0.1)
         self.ui.canvas.draw()
 
+    #---------------------------------------------------------------------
     def plot_all_psd(self, epoch_index, f_index_min, f_index_max) :
         """Plot all the PSD"""
         self.ui.figure.clear()
         self.plot_all_psd_adjust(epoch_index, f_index_min, f_index_max)
+        self.ui.figure.subplots_adjust(top = 0.9, right = 0.9,
+                                       left = 0.1, bottom = 0.1)
         self.ui.canvas.draw()
 
     #=====================================================================
@@ -226,7 +229,9 @@ class EpochsPSDWindow(QDialog):
             ax.set_ylabel('Channels')
             ax.xaxis.set_ticks_position('bottom')
 
+    #---------------------------------------------------------------------
     def plot_all_psd_adjust(self, epoch_index, f_index_min, f_index_max) :
+        """Plot all the PSD"""
         if (self.ui.showMean.checkState()
                 and self.ui.showSingleEpoch.checkState()) :
             nbFrames = 2
@@ -243,6 +248,10 @@ class EpochsPSDWindow(QDialog):
                          fontsize = 15, fontweight = 'light')
             ax.set_xlabel('Frequencies (Hz)')
             ax.set_ylabel('Power')
+            self.annot_epoch = ax.annotate("", xy=(0,0), xytext=(20,20),
+                                           textcoords="offset points",
+                                           arrowprops=dict(arrowstyle="->"))
+            self.annot_epoch.set_visible(False)
 
         # plot average data if showMean is checked
         if self.ui.showMean.checkState() :
@@ -255,6 +264,10 @@ class EpochsPSDWindow(QDialog):
                          fontweight = 'light')
             ax.set_xlabel('Frequencies (Hz)')
             ax.set_ylabel('Power')
+            self.annot_avg = ax.annotate("", xy=(0,0), xytext=(20,20),
+                                         textcoords="offset points",
+                                         arrowprops=dict(arrowstyle="->"))
+            self.annot_avg.set_visible(False)
 
     #---------------------------------------------------------------------
     def add_colorbar(self, position) :
@@ -307,6 +320,45 @@ class EpochsPSDWindow(QDialog):
 
             elif self.ui.showMean.checkState() :
                 self.plot_single_avg_psd(channel_picked)
+
+    #---------------------------------------------------------------------
+    def onclick_pick(self, click) :
+        if self.plotType == "All PSD" :
+            ax_picked = click.mouseevent.inaxes
+            if (self.ui.showMean.checkState()
+                    and self.ui.showSingleEpoch.checkState()) :
+
+                if ax_picked.is_first_col() :
+                    ch = click.artist.get_label()
+                    self.annot_epoch.set_text(ch)
+                    self.annot_epoch.xy = (click.mouseevent.xdata,
+                                           click.mouseevent.ydata)
+                    self.annot_epoch.set_visible(True)
+                    self.ui.canvas.draw_idle()
+
+                else :
+                    ch = click.artist.get_label()
+                    self.annot_avg.set_text(ch)
+                    self.annot_avg.xy = (click.mouseevent.xdata,
+                                           click.mouseevent.ydata)
+                    self.annot_avg.set_visible(True)
+                    self.ui.canvas.draw_idle()
+
+            elif self.ui.showSingleEpoch.checkState() :
+                ch = click.artist.get_label()
+                self.annot_epoch.set_text(ch)
+                self.annot_epoch.xy = (click.mouseevent.xdata,
+                                       click.mouseevent.ydata)
+                self.annot_epoch.set_visible(True)
+                self.ui.canvas.draw_idle()
+
+            elif self.ui.showMean.checkState() :
+                ch = click.artist.get_label()
+                self.annot_avg.set_text(ch)
+                self.annot_avg.xy = (click.mouseevent.xdata,
+                                       click.mouseevent.ydata)
+                self.annot_avg.set_visible(True)
+                self.ui.canvas.draw_idle()
 
     #---------------------------------------------------------------------
     def plot_single_psd(self, epoch_picked, channel_picked) :

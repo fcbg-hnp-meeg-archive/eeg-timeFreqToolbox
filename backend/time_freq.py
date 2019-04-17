@@ -257,5 +257,5 @@ def _open_tfr_visualizer(self) :
     from app.avg_epochs_tfr import AvgTFRWindow
 
     _init_avg_tfr(self)
-    psdVisualizer = AvgTFRWindow(self.avgTFR)
+    psdVisualizer = AvgTFRWindow(self.avgTFR, parent = self)
     psdVisualizer.show()
