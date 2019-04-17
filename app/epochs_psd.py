@@ -226,7 +226,7 @@ class EpochsPSDWindow(QDialog):
             ax.set_ylabel('Channels')
             ax.xaxis.set_ticks_position('bottom')
 
-    def plot_all_psd_adjust(epoch_index, f_index_min, f_index_max) :
+    def plot_all_psd_adjust(self, epoch_index, f_index_min, f_index_max) :
         if (self.ui.showMean.checkState()
                 and self.ui.showSingleEpoch.checkState()) :
             nbFrames = 2
@@ -237,29 +237,24 @@ class EpochsPSDWindow(QDialog):
             ax = self.ui.figure.add_subplot(1, nbFrames, 1)
             self.psd.plot_all_psd(
                 epoch_index, f_index_min, f_index_max,
-                vmin = self.vmin, vmax = vmax,
                 axes = ax, log_display = self.log)
             ax.axis('tight')
-            ax.set_title("Matrix for epoch {}".format(epoch_index + 1),
+            ax.set_title("PSD for epoch {}".format(epoch_index + 1),
                          fontsize = 15, fontweight = 'light')
             ax.set_xlabel('Frequencies (Hz)')
-            ax.set_ylabel('Channels')
-            ax.xaxis.set_ticks_position('bottom')
+            ax.set_ylabel('Power')
 
         # plot average data if showMean is checked
         if self.ui.showMean.checkState() :
             ax = self.ui.figure.add_subplot(1, nbFrames, nbFrames)
-            self.cbar_image = self.psd.plot_avg_matrix(
-                                  f_index_min, f_index_max, axes = ax,
-                                  vmin = self.vmin, vmax = vmax,
-                                  log_display = self.log)
+            self.psd.plot_all_avg_psd(
+                f_index_min, f_index_max,
+                axes = ax, log_display = self.log)
             ax.axis('tight')
-            ax.set_title("Average Matrix", fontsize = 15,
+            ax.set_title("Average PSD", fontsize = 15,
                          fontweight = 'light')
             ax.set_xlabel('Frequencies (Hz)')
-            ax.set_ylabel('Channels')
-            ax.xaxis.set_ticks_position('bottom')
-
+            ax.set_ylabel('Power')
 
     #---------------------------------------------------------------------
     def add_colorbar(self, position) :
@@ -289,6 +284,9 @@ class EpochsPSDWindow(QDialog):
             x, y = click.xdata, click.ydata
             channel_picked = self.psd.channel_index_from_coord(x, y)
             ax_picked = click.inaxes
+
+        else :
+            channel_picked = None
 
         if (channel_picked is not None and click.dblclick) :
 

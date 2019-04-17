@@ -169,8 +169,6 @@ class RawPSDWindow(QDialog):
             self.annot.set_visible(True)
             self.ui.canvas.draw_idle()
 
-
-
     #---------------------------------------------------------------------
     def plot_single_psd(self, epoch_picked, channel_picked) :
         """Plot one single PSD"""
