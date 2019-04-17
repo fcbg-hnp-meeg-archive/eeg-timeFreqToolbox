@@ -49,7 +49,7 @@ def init_info_string(eeg_data) :
     infos1     = (("<li><b>Sampling Frequency:</b> {}Hz"
                   + "<li><b>Number of Channels:</b> {}")
                   .format(sfreq, n_channels))
-    if len(eeg_data.get_data()) == 2 :
+    if len(eeg_data.get_data().shape) == 2 :
         n_times = eeg_data.n_times
         infos2 = "<li><b>Time points:</b> {}</li>".format(n_times)
         infos3 = ("<li><b>Duration of the signal:</b> {0:.2f}s </li>"
