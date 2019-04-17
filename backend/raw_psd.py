@@ -229,7 +229,6 @@ class RawPSD :
         """
         from matplotlib.cm import rainbow
         from numpy import linspace
-        from mpldatacursor import datacursor
 
         psds = self.data[:, freq_index_min : freq_index_max]
         nchan = self.info['nchan']
@@ -239,7 +238,6 @@ class RawPSD :
             axes.plot(self.freqs[freq_index_min : freq_index_max],
                       psds[i, :], color = c, label = label,
                       alpha = .5)
-        datacursor(formatter='{label}'.format, bbox=None)
         return axes
 
     #------------------------------------------------------------------------

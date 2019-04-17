@@ -38,8 +38,9 @@ class RawPSDWindow(QDialog):
         self.ui.fmax.setText(str(self.psd.freqs[-1]))
         self.ui.vmax.setText("0")   #Auto scaling by default
         self.ui.vmax.setMaxLength(6)
-        self.ui.selectPlotType.addItem("PSD Matrix")
+        self.ui.selectPlotType.addItem("Matrix")
         self.ui.selectPlotType.addItem("Topomap")
+        self.ui.selectPlotType.addItem("All PSD")
 
     #------------------------------------------------------------------------
     def set_bindings(self) :
@@ -79,8 +80,12 @@ class RawPSDWindow(QDialog):
                 self.show_error(
                     "No coordinates for topomap have been initialized :(")
                 self.ui.selectPlotType.setCurrentIndex(0)
-        if self.plotType == "PSD Matrix" :
+
+        if self.plotType == "Matrix" :
             self.plot_matrix(f_index_min, f_index_max, vmax)
+
+        if self.plotType == "All PSD" :
+            self.plot_all_psd(f_index_min, f_index_max)
 
     #---------------------------------------------------------------------
     def plot_topomap(self, f_index_min, f_index_max, vmax):
@@ -98,7 +103,7 @@ class RawPSDWindow(QDialog):
 
     #---------------------------------------------------------------------
     def plot_matrix(self, f_index_min, f_index_max, vmax) :
-        """Plot the PSD Matrix"""
+        """Plot the Matrix"""
         self.ui.figure.clear()
         ax = self.ui.figure.add_subplot(1, 1, 1)
         self.cbar_image = self.psd.plot_matrix(
@@ -106,7 +111,7 @@ class RawPSDWindow(QDialog):
                                vmin = self.vmin, vmax = vmax,
                                log_display = self.log)
         ax.axis('tight')
-        ax.set_title("PSD Matrix", fontsize = 15, fontweight = 'light')
+        ax.set_title("Matrix", fontsize = 15, fontweight = 'light')
         ax.set_xlabel('Frequencies (Hz)')
         ax.set_ylabel('Channels')
         ax.xaxis.set_ticks_position('bottom')
@@ -115,16 +120,35 @@ class RawPSDWindow(QDialog):
                                        left = 0.1, bottom = 0.1)
         self.ui.canvas.draw()
 
+    def plot_all_psd(self, f_index_min, f_index_max) :
+        """Plot all PSDs"""
+        from mpldatacursor import datacursor
+
+        self.ui.figure.clear()
+        ax = self.ui.figure.add_subplot(1, 1, 1)
+        self.psd.plot_all_psd(
+            f_index_min, f_index_max, axes = ax)
+        ax.axis = ('tight')
+        ax.patch.set_alpha(0)
+        ax.set_title("PSD", fontsize = 15, fontweight = 'light')
+        self.set_ax_single_psd(ax)
+        self.ui.figure.subplots_adjust(top = 0.9, right = 0.9,
+                                       left = 0.1, bottom = 0.1)
+        datacursor(formatter='{label}'.format, bbox=None)
+        self.ui.canvas.draw()
+
     #=====================================================================
     # Handle PSD single plotting on click
     #=====================================================================
     def __onclick__(self, click) :
         """Get coordinates on the canvas and plot the corresponding PSD"""
-        if self.plotType == "PSD Matrix" :
+        if self.plotType == "Matrix" :
             channel_picked = click.ydata - 1
-        if self.plotType == "Topomap" :
+        elif self.plotType == "Topomap" :
             x, y = click.xdata, click.ydata
             channel_picked = self.psd.channel_index_from_coord(x, y)
+        else :
+            channel_picked = None
 
         if (channel_picked is not None
                 and click.dblclick) :
