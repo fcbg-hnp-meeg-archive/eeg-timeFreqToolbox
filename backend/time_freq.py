@@ -103,9 +103,9 @@ def _init_nfft(self) :
     n_fft    = int_(self.params.get('n_fft', None))
     if n_fft is None :
         if self.type == 'raw' :
-             n_fft = self.data.n_times
+             n_fft = min(self.data.n_times, 2048)
         if self.type == 'epochs' :
-            n_fft = len(self.data.times)
+            n_fft = min(len(self.data.times), 2048)
     return n_fft
 
 #---------------------------------------------------------------------
@@ -182,7 +182,7 @@ def _open_epochs_psd_visualizer(self) :
     from app.epochs_psd import EpochsPSDWindow
 
     _init_epochs_psd(self)
-    psdVisualizer = EpochsPSDWindow(self.psd)
+    psdVisualizer = EpochsPSDWindow(self.psd, parent = self)
     psdVisualizer.show()
 
 #---------------------------------------------------------------------
@@ -191,7 +191,7 @@ def _open_raw_psd_visualizer(self) :
     from app.raw_psd import RawPSDWindow
 
     _init_raw_psd(self)
-    psdVisualizer = RawPSDWindow(self.psd)
+    psdVisualizer = RawPSDWindow(self.psd, parent = self)
     psdVisualizer.show()
 
 
