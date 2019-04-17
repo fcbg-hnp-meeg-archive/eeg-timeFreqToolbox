@@ -321,6 +321,47 @@ class EpochsPSD :
             return plt.plot(self.freqs[freq_index_min : freq_index_max], psd)
 
     #------------------------------------------------------------------------
+    def plot_all_psd(self, epoch_index, freq_index_min, freq_index_max,
+                     axes = None, log_display = False) :
+        """
+        Plot all single PSD in
+        """
+        from matplotlib.cm import rainbow
+        from numpy import linspace
+
+        psds = self.data[epoch_index, :, freq_index_min : freq_index_max]
+        if log_display : psds = 10 * log(psds)
+        nchan = len(self.picks)
+        colors = rainbow(linspace(0, 1, nchan))
+        for i, c in zip(range(nchan), colors) :
+            label = self.info['ch_names'][self.picks[i]]
+            axes.plot(self.freqs[freq_index_min : freq_index_max],
+                      psds[i, :], color = c, label = label,
+                      alpha = .5)
+        return axes
+
+    #------------------------------------------------------------------------
+    def plot_all_avg_psd(self, freq_index_min, freq_index_max,
+                     axes = None, log_display = False) :
+        """
+        Plot all average single PSD in the axes
+        """
+        from matplotlib.cm import rainbow
+        from numpy import linspace
+
+        psds = mean(self.data[:, :, freq_index_min : freq_index_max],
+                    axis = 0)
+        if log_display : psds = 10 * log(psds)
+        nchan = len(self.picks)
+        colors = rainbow(linspace(0, 1, nchan))
+        for i, c in zip(range(nchan), colors) :
+            label = self.info['ch_names'][self.picks[i]]
+            axes.plot(self.freqs[freq_index_min : freq_index_max],
+                      psds[i, :], color = c, label = label,
+                      alpha = .5)
+        return axes
+
+    #------------------------------------------------------------------------
     def channel_index_from_coord(self, x, y) :
         """
         Returns the index of the channel with coordinates closest to (x,y)

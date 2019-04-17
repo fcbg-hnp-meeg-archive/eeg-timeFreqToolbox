@@ -59,14 +59,14 @@ class RawPSDWindow(QDialog):
         self.ui.figure.patch.set_facecolor('None')
         self.ui.canvas = FigureCanvas(self.ui.figure)
         self.ui.canvas.setStyleSheet("background-color:transparent;")
-        cid            = self.ui.canvas.mpl_connect('button_press_event',
-                                                    self.__onclick__)
-        self.cursor    = ()
-
         # Matplotlib toolbar
         self.ui.toolbar = NavigationToolbar(self.ui.canvas, self)
         self.ui.figureLayout.addWidget(self.ui.toolbar)
         self.ui.figureLayout.addWidget(self.ui.canvas)
+        self.ui.canvas.mpl_connect('button_press_event',
+                                    self.__onclick__)
+        self.ui.canvas.mpl_connect('pick_event',
+                                    self.__onclick_pick__)
 
     #========================================================================
     # Main Plotting function
@@ -120,21 +120,26 @@ class RawPSDWindow(QDialog):
                                        left = 0.1, bottom = 0.1)
         self.ui.canvas.draw()
 
+
+
     def plot_all_psd(self, f_index_min, f_index_max) :
         """Plot all PSDs"""
-        from mpldatacursor import datacursor
 
         self.ui.figure.clear()
         ax = self.ui.figure.add_subplot(1, 1, 1)
+        self.annot = ax.annotate("", xy=(0,0), xytext=(20,20),
+                                 textcoords="offset points",
+                                 arrowprops=dict(arrowstyle="->"))
+        self.annot.set_visible(False)
         self.psd.plot_all_psd(
-            f_index_min, f_index_max, axes = ax)
+            f_index_min, f_index_max, axes = ax, log_display = self.log)
+
         ax.axis = ('tight')
         ax.patch.set_alpha(0)
         ax.set_title("PSD", fontsize = 15, fontweight = 'light')
         self.set_ax_single_psd(ax)
         self.ui.figure.subplots_adjust(top = 0.9, right = 0.9,
                                        left = 0.1, bottom = 0.1)
-        datacursor(formatter='{label}'.format, bbox=None)
         self.ui.canvas.draw()
 
     #=====================================================================
@@ -154,6 +159,17 @@ class RawPSDWindow(QDialog):
                 and click.dblclick) :
             channel_picked = floor(channel_picked) + 1
             self.plot_single_psd(channel_picked, channel_picked)
+
+    #---------------------------------------------------------------------
+    def __onclick_pick__(self, click) :
+        if self.plotType == "All PSD" :
+            ch = click.artist.get_label()
+            self.annot.set_text(ch)
+            self.annot.xy = (click.mouseevent.xdata, click.mouseevent.ydata)
+            self.annot.set_visible(True)
+            self.ui.canvas.draw_idle()
+
+
 
     #---------------------------------------------------------------------
     def plot_single_psd(self, epoch_picked, channel_picked) :

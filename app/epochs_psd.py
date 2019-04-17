@@ -48,8 +48,9 @@ class EpochsPSDWindow(QDialog):
         self.ui.vmax.setText("0")
         self.ui.vmax.setMaxLength(6)
         self.ui.showMean.setCheckState(2)
-        self.ui.selectPlotType.addItem("PSD Matrix")
+        self.ui.selectPlotType.addItem("Matrix")
         self.ui.selectPlotType.addItem("Topomap")
+        self.ui.selectPlotType.addItem("All PSD")
 
     #---------------------------------------------------------------------
     def set_bindings(self) :
@@ -91,8 +92,11 @@ class EpochsPSDWindow(QDialog):
                 self.show_error(
                     "No coordinates for topomap have been initialized :(")
                 self.ui.selectPlotType.setCurrentIndex(0)
-        if self.plotType == "PSD Matrix" :
+        if self.plotType == "Matrix" :
             self.plot_matrix(epoch_index, f_index_min, f_index_max, vmax)
+
+        if self.plotType == "All PSD" :
+            self.plot_all_psd(epoch_index, f_index_min, f_index_max)
 
     #---------------------------------------------------------------------
     def plot_topomaps(self, epoch_index, f_index_min, f_index_max, vmax):
@@ -106,12 +110,18 @@ class EpochsPSDWindow(QDialog):
 
     #---------------------------------------------------------------------
     def plot_matrix(self, epoch_index, f_index_min, f_index_max, vmax) :
-        """Plot the PSD Matrix"""
+        """Plot the Matrix"""
         self.ui.figure.clear()
         self.matrix_adjust(epoch_index, f_index_min, f_index_max, vmax)
         self.add_colorbar([0.915, 0.15, 0.01, 0.7])
         self.ui.figure.subplots_adjust(top = 0.85, right = 0.8,
                                        left = 0.1, bottom = 0.1)
+        self.ui.canvas.draw()
+
+    def plot_all_psd(self, epoch_index, f_index_min, f_index_max) :
+        """Plot all the PSD"""
+        self.ui.figure.clear()
+        self.plot_all_psd_adjust(epoch_index, f_index_min, f_index_max)
         self.ui.canvas.draw()
 
     #=====================================================================
@@ -196,7 +206,7 @@ class EpochsPSDWindow(QDialog):
                                   vmin = self.vmin, vmax = vmax,
                                   axes = ax, log_display = self.log)
             ax.axis('tight')
-            ax.set_title("PSD Matrix for epoch {}".format(epoch_index + 1),
+            ax.set_title("Matrix for epoch {}".format(epoch_index + 1),
                          fontsize = 15, fontweight = 'light')
             ax.set_xlabel('Frequencies (Hz)')
             ax.set_ylabel('Channels')
@@ -210,11 +220,46 @@ class EpochsPSDWindow(QDialog):
                                   vmin = self.vmin, vmax = vmax,
                                   log_display = self.log)
             ax.axis('tight')
-            ax.set_title("Average PSD Matrix", fontsize = 15,
+            ax.set_title("Average Matrix", fontsize = 15,
                          fontweight = 'light')
             ax.set_xlabel('Frequencies (Hz)')
             ax.set_ylabel('Channels')
             ax.xaxis.set_ticks_position('bottom')
+
+    def plot_all_psd_adjust(epoch_index, f_index_min, f_index_max) :
+        if (self.ui.showMean.checkState()
+                and self.ui.showSingleEpoch.checkState()) :
+            nbFrames = 2
+        else : nbFrames = 1
+
+        # plot single epoch data uf showSingleEpoch is checked
+        if self.ui.showSingleEpoch.checkState() :
+            ax = self.ui.figure.add_subplot(1, nbFrames, 1)
+            self.psd.plot_all_psd(
+                epoch_index, f_index_min, f_index_max,
+                vmin = self.vmin, vmax = vmax,
+                axes = ax, log_display = self.log)
+            ax.axis('tight')
+            ax.set_title("Matrix for epoch {}".format(epoch_index + 1),
+                         fontsize = 15, fontweight = 'light')
+            ax.set_xlabel('Frequencies (Hz)')
+            ax.set_ylabel('Channels')
+            ax.xaxis.set_ticks_position('bottom')
+
+        # plot average data if showMean is checked
+        if self.ui.showMean.checkState() :
+            ax = self.ui.figure.add_subplot(1, nbFrames, nbFrames)
+            self.cbar_image = self.psd.plot_avg_matrix(
+                                  f_index_min, f_index_max, axes = ax,
+                                  vmin = self.vmin, vmax = vmax,
+                                  log_display = self.log)
+            ax.axis('tight')
+            ax.set_title("Average Matrix", fontsize = 15,
+                         fontweight = 'light')
+            ax.set_xlabel('Frequencies (Hz)')
+            ax.set_ylabel('Channels')
+            ax.xaxis.set_ticks_position('bottom')
+
 
     #---------------------------------------------------------------------
     def add_colorbar(self, position) :
@@ -234,8 +279,8 @@ class EpochsPSDWindow(QDialog):
     #=====================================================================
     def onclick(self, click) :
         """Get coordinates on the canvas and plot the corresponding PSD"""
-        if self.plotType == "PSD Matrix" :
-            # Handle clicks on PSD matrix
+        if self.plotType == "Matrix" :
+            # Handle clicks on Matrix
             channel_picked = click.ydata - 1
             ax_picked      = click.inaxes
 
