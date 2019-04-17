@@ -222,6 +222,27 @@ class RawPSD :
             return  plt.plot(self.freqs[freq_index_min : freq_index_max], psd)
 
     #------------------------------------------------------------------------
+    def plot_all_psd(self, freq_index_min, freq_index_max,
+                     axes = None, log_display = False) :
+        """
+        Plot all single PSD in
+        """
+        from matplotlib.cm import rainbow
+        from numpy import linspace
+        from mpldatacursor import datacursor
+
+        psds = self.data[:, freq_index_min : freq_index_max]
+        nchan = self.info['nchan']
+        colors = rainbow(linspace(0, 1, nchan))
+        for i, c in zip(range(nchan), colors) :
+            label = self.info['ch_names'][i]
+            axes.plot(self.freqs[freq_index_min : freq_index_max],
+                      psds[i, :], color = c, label = label,
+                      alpha = .5)
+        datacursor(formatter='{label}'.format, bbox=None)
+        return axes
+
+    #------------------------------------------------------------------------
     def save_matrix_txt(self, path, freq_index_min = 0,
                         freq_index_max = -1) :
         """
