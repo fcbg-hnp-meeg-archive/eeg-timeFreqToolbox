@@ -279,6 +279,11 @@ class EpochsPSDWindow(QDialog):
         ax.set_title('PSD of Epoch {}, channel {}'.format(epoch_picked + 1,
                      self.psd.info['ch_names'][index_ch]))
         self.set_ax_single_psd(ax)
+        win = fig.canvas.manager.window
+        win.setWindowModality(Qt.WindowModal)
+        win.setWindowTitle("PSD")
+        win.findChild(QStatusBar).hide()
+        fig.show()
 
     #---------------------------------------------------------------------
     def plot_single_avg_psd(self, channel_picked) :
@@ -294,6 +299,11 @@ class EpochsPSDWindow(QDialog):
         ax.set_title('Average PSD of channel {}'.format(
                      self.psd.info['ch_names'][index_ch]))
         self.set_ax_single_psd(ax)
+        win = fig.canvas.manager.window
+        win.setWindowModality(Qt.WindowModal)
+        win.setWindowTitle("PSD")
+        win.findChild(QStatusBar).hide()
+        fig.show()
 
     #---------------------------------------------------------------------
     def set_ax_single_psd(self, ax) :
@@ -302,7 +312,6 @@ class EpochsPSDWindow(QDialog):
                      self.psd.freqs[self.f_index_max]])
         ax.set_xlabel('Frequency (Hz)')
         ax.set_ylabel('Power (µV²/Hz)')
-        plt.show()
 
     #=====================================================================
     # Auxiliary function
