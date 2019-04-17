@@ -53,3 +53,17 @@ def init_info_string(eeg_data) :
 
     infos = infos1 + infos2 + infos3
     return "<ul>" + infos + "</ul>"
+
+#---------------------------------------------------------------------
+def get_index_freq(freqs, fmin, fmax) :
+    """Get the indices of the freq between fmin and fmax in freqs
+    """
+    f_index_min, f_index_max = -1, 0
+    for freq in freqs :
+        if freq <= fmin : f_index_min += 1
+        if freq <= fmax : f_index_max += 1
+
+    # Just check if f_index_max is not out of bound
+    f_index_max = min(len(freqs) - 1, f_index_max)
+    f_index_min = max(0, f_index_min)
+    return f_index_min, f_index_max
