@@ -1,6 +1,8 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QListWidget, QDialogButtonBox, QLabel
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,
+                             QDialogButtonBox, QLabel)
 
-class PickChannels(QDialog) :
+
+class PickChannels(QDialog):
     def __init__(self, parent, channels, selected=[]):
         super().__init__(parent)
         self.parent = parent
@@ -14,20 +16,20 @@ class PickChannels(QDialog) :
         self.ch.itemSelectionChanged.connect(self.init_buttons)
         self.init_buttons()
 
-    #---------------------------------------------------------------------
-    def init_buttonbox(self) :
+    # ---------------------------------------------------------------------
+    def init_buttonbox(self):
         """Initialize button box
         """
         self.buttonbox = QDialogButtonBox(QDialogButtonBox.Ok |
                                           QDialogButtonBox.Cancel)
         (self.buttonbox.button(QDialogButtonBox.Ok)
-        .clicked.connect(self.close))
+         .clicked.connect(self.close))
         (self.buttonbox.button(QDialogButtonBox.Cancel)
-        .clicked.connect(self.close))
+         .clicked.connect(self.close))
         self.layout.addWidget(self.buttonbox)
 
-    #---------------------------------------------------------------------
-    def init_channel_box(self, channels, selected) :
+    # ---------------------------------------------------------------------
+    def init_channel_box(self, channels, selected):
         """Initialize list
         """
         self.ch = QListWidget()
@@ -38,7 +40,7 @@ class PickChannels(QDialog) :
                 self.ch.item(i).setSelected(True)
         self.layout.addWidget(self.ch)
 
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     def init_buttons(self):
         """Toggle OK button
         """

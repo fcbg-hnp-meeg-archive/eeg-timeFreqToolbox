@@ -10,6 +10,7 @@ from math import floor
 
 from app.ui.epochs_psd_UI import Ui_EpochsPSDWindow
 
+
 class EpochsPSDWindow(QDialog):
     """PSDWindow class, which enable to visualize the PSDs for epochs
     """
@@ -21,8 +22,8 @@ class EpochsPSDWindow(QDialog):
         self.ui.retranslateUi(self)
         self.setup_window()
 
-    #---------------------------------------------------------------------
-    def setup_window(self) :
+    # ---------------------------------------------------------------------
+    def setup_window(self):
         """Call all the setup functions
         """
         self.set_canvas()
@@ -31,8 +32,8 @@ class EpochsPSDWindow(QDialog):
         self.plot_change()
 
     # Setup functions
-    #=====================================================================
-    def set_initial_values(self) :
+    # =====================================================================
+    def set_initial_values(self):
         """Setup initial values
         """
         self.ui.epochsSlider.setMaximum(self.psd.data.shape[0] - 1)
@@ -54,8 +55,8 @@ class EpochsPSDWindow(QDialog):
         self.ui.selectPlotType.addItem('Topomap')
         self.ui.selectPlotType.addItem('All PSD')
 
-    #---------------------------------------------------------------------
-    def set_bindings(self) :
+    # ---------------------------------------------------------------------
+    def set_bindings(self):
         """Set Bindings
         """
         self.ui.epochsSlider.valueChanged.connect(self.value_changed)
@@ -68,11 +69,11 @@ class EpochsPSDWindow(QDialog):
         self.ui.vmax.editingFinished.connect(self.value_changed)
         self.ui.selectPlotType.currentIndexChanged.connect(self.plot_change)
 
-    #---------------------------------------------------------------------
-    def set_canvas(self) :
+    # ---------------------------------------------------------------------
+    def set_canvas(self):
         """setup canvas for matplotlib
         """
-        self.ui.figure = plt.figure(figsize = (10,10))
+        self.ui.figure = plt.figure(figsize=(10, 10))
         self.ui.figure.patch.set_facecolor('None')
         self.ui.canvas = FigureCanvas(self.ui.figure)
         self.ui.canvas.setStyleSheet('background-color:transparent;')
@@ -84,40 +85,40 @@ class EpochsPSDWindow(QDialog):
         self.ui.canvas.mpl_connect('pick_event', self.onclick_pick)
 
     # Main Plotting function
-    #=====================================================================
-    def plot_psd(self, epoch_index, f_index_min, f_index_max, vmax) :
+    # =====================================================================
+    def plot_psd(self, epoch_index, f_index_min, f_index_max, vmax):
         """Plot the correct type of PSD
         """
         from backend.viz_epochs import \
             _plot_topomaps, _plot_matrix, _plot_all_psd
 
-        if self.plotType == 'Topomap' :
-            try :
+        if self.plotType == 'Topomap':
+            try:
                 _plot_topomaps(self, epoch_index,
                                f_index_min, f_index_max, vmax)
-            except :
+            except ValueError:
                 # If no topomap is initialized, error is displayed
                 from app.error import show_error
                 show_error(
                     'No coordinates for topomap have been initialized :(')
                 self.ui.selectPlotType.setCurrentIndex(0)
 
-        if self.plotType == 'Matrix' :
+        if self.plotType == 'Matrix':
             _plot_matrix(self, epoch_index, f_index_min, f_index_max, vmax)
 
-        if self.plotType == 'All PSD' :
+        if self.plotType == 'All PSD':
             _plot_all_psd(self, epoch_index, f_index_min, f_index_max)
 
     # Updating the canvas functions
-    #=====================================================================
-    def plot_change(self) :
+    # =====================================================================
+    def plot_change(self):
         """Update the plot type
         """
         self.plotType = self.ui.selectPlotType.currentText()
         self.value_changed()
 
-    #---------------------------------------------------------------------
-    def value_changed(self) :
+    # ---------------------------------------------------------------------
+    def value_changed(self):
         """ Get called if a value is changed
         """
         from backend.util import get_index_freq
@@ -128,9 +129,9 @@ class EpochsPSDWindow(QDialog):
         self.log = self.ui.displayLog.checkState()
         self.vmin = 0
 
-        if self.log :
+        if self.log:
             self.vmin = None
-        if self.vmax == 0 and not self.log :
+        if self.vmax == 0 and not self.log:
             self.vmax = None
 
         self.f_index_min, self.f_index_max = get_index_freq(
@@ -139,8 +140,8 @@ class EpochsPSDWindow(QDialog):
         self.plot_psd(epoch_index, self.f_index_min, self.f_index_max,
                       self.vmax)
 
-    #---------------------------------------------------------------------
-    def slider_changed(self) :
+    # ---------------------------------------------------------------------
+    def slider_changed(self):
         """Get called when the slider is touched
         """
         freq_index = self.ui.frequencySlider.value()
@@ -150,89 +151,89 @@ class EpochsPSDWindow(QDialog):
         self.value_changed()
 
     # Handle PSD single plotting on click
-    #=====================================================================
-    def onclick(self, click) :
+    # =====================================================================
+    def onclick(self, click):
         """Get coordinates on the canvas and plot the corresponding PSD
         """
         from backend.viz_epochs import _plot_single_avg_psd, _plot_single_psd
 
-        if self.plotType == 'Matrix' :
+        if self.plotType == 'Matrix':
             # Handle clicks on Matrix
             channel_picked = click.ydata - 1
-            ax_picked      = click.inaxes
+            ax_picked = click.inaxes
 
-        elif self.plotType == 'Topomap' :
+        elif self.plotType == 'Topomap':
             # Handle clicks on topomaps
             x, y = click.xdata, click.ydata
             channel_picked = self.psd.channel_index_from_coord(x, y)
             ax_picked = click.inaxes
 
-        else :
+        else:
             channel_picked = None
 
-        if (channel_picked is not None and click.dblclick) :
+        if (channel_picked is not None and click.dblclick):
 
             channel_picked = floor(channel_picked) + 1
-            epoch_picked   = self.ui.epochsSlider.value()
+            epoch_picked = self.ui.epochsSlider.value()
 
             # If both are checked, it depends on which plot user clicked
             if (self.ui.showMean.checkState()
-                    and self.ui.showSingleEpoch.checkState()) :
+                    and self.ui.showSingleEpoch.checkState()):
 
-                if ax_picked.is_first_col() :
+                if ax_picked.is_first_col():
                     _plot_single_psd(self, epoch_picked, channel_picked)
-                else :
+                else:
                     _plot_single_avg_psd(self, channel_picked)
 
-            elif self.ui.showSingleEpoch.checkState() :
+            elif self.ui.showSingleEpoch.checkState():
                 _plot_single_psd(self, epoch_picked, channel_picked)
 
-            elif self.ui.showMean.checkState() :
+            elif self.ui.showMean.checkState():
                 _plot_single_avg_psd(self, channel_picked)
 
-    #---------------------------------------------------------------------
-    def onclick_pick(self, click) :
+    # ---------------------------------------------------------------------
+    def onclick_pick(self, click):
         """Get the line on click and plot a tooltip with the name of
         the channel
         """
         from backend.util import _annot
         from backend.viz_epochs import _plot_single_avg_psd, _plot_single_psd
 
-        if self.plotType == 'All PSD' :
+        if self.plotType == 'All PSD':
             # Handle click on all PSD plots
             ax_picked = click.mouseevent.inaxes
             if (self.ui.showMean.checkState()
-                    and self.ui.showSingleEpoch.checkState()) :
+                    and self.ui.showSingleEpoch.checkState()):
 
-                if ax_picked.is_first_col() :
+                if ax_picked.is_first_col():
                     _annot(self, click, self.annot_epoch)
 
-                else :
+                else:
                     _annot(self, click, self.annot_avg)
 
-            elif self.ui.showSingleEpoch.checkState() :
+            elif self.ui.showSingleEpoch.checkState():
                 _annot(self, click, self.annot_epoch)
 
-            elif self.ui.showMean.checkState() :
+            elif self.ui.showMean.checkState():
                 _annot(self, click, self.annot_avg)
 
-            if click.mouseevent.dblclick :
-                epoch_picked   = self.ui.epochsSlider.value()
+            if click.mouseevent.dblclick:
+                epoch_picked = self.ui.epochsSlider.value()
                 ch = str(click.artist.get_label())
                 index = self.psd.info['ch_names'].index(ch)
                 index = self.psd.picks.index(index)
 
                 if (self.ui.showMean.checkState()
-                        and self.ui.showSingleEpoch.checkState()) :
+                        and self.ui.showSingleEpoch.checkState()):
 
-                    if ax_picked.is_first_col() :
+                    if ax_picked.is_first_col():
                         _plot_single_psd(self, epoch_picked, index + 1)
 
-                    else :
+                    else:
                         _plot_single_avg_psd(self, index + 1)
 
-                elif self.ui.showSingleEpoch.checkState() :
+                elif self.ui.showSingleEpoch.checkState():
                     _plot_single_psd(self, epoch_picked, index + 1)
 
-                elif self.ui.showMean.checkState() :
+                elif self.ui.showMean.checkState():
                     _plot_single_avg_psd(self, index + 1)

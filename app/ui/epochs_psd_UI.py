@@ -19,7 +19,8 @@ class Ui_EpochsPSDWindow(object):
         font.setPointSize(10)
         Dialog.setFont(font)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(Dialog)
-        self.verticalLayout_3.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
+        self.verticalLayout_3.setSizeConstraint(
+            QtWidgets.QLayout.SetMinAndMaxSize)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.figureLayout = QtWidgets.QVBoxLayout()
         self.figureLayout.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
@@ -32,18 +33,21 @@ class Ui_EpochsPSDWindow(object):
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setObjectName("frame")
         self.lowerWindowLayout = QtWidgets.QVBoxLayout(self.frame)
-        self.lowerWindowLayout.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
+        self.lowerWindowLayout.setSizeConstraint(
+            QtWidgets.QLayout.SetMinAndMaxSize)
         self.lowerWindowLayout.setSpacing(10)
         self.lowerWindowLayout.setObjectName("lowerWindowLayout")
         self.ParametersLayout = QtWidgets.QHBoxLayout()
-        self.ParametersLayout.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
+        self.ParametersLayout.setSizeConstraint(
+            QtWidgets.QLayout.SetMinAndMaxSize)
         self.ParametersLayout.setSpacing(15)
         self.ParametersLayout.setObjectName("ParametersLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
+        self.horizontalLayout_2.setSizeConstraint(
+            QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout_2.setSpacing(10)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.frequencyLabel = QtWidgets.QLabel(self.frame)
@@ -69,7 +73,9 @@ class Ui_EpochsPSDWindow(object):
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setSpacing(0)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
-        spacerItem = QtWidgets.QSpacerItem(310, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            310, 20, QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem)
         self.frequencySlider = QtWidgets.QSlider(self.frame)
         self.frequencySlider.setOrientation(QtCore.Qt.Horizontal)
@@ -174,9 +180,10 @@ class Ui_EpochsPSDWindow(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Epochs PSD Visualizer"))
-        self.frequencyLabel.setText(_translate("Dialog", "Frequency Range Display (min - max)"))
+        self.frequencyLabel.setText(
+            _translate("Dialog", "Frequency Range Display (min - max)"))
         self.vmaxLabel.setText(_translate("Dialog", "Scaling "))
-        self.selectPlotLabel.setText(_translate("Dialog", "Select Plot Type  "))
+        self.selectPlotLabel.setText(_translate("Dialog", "Select Plot Type"))
         self.displayLabel.setText(_translate("Dialog", "Display"))
         self.displayLog.setText(_translate("Dialog", "Log Scale"))
         self.showSingleEpoch.setText(_translate("Dialog", "Single Epoch"))
