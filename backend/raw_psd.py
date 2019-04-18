@@ -208,18 +208,18 @@ class RawPSD :
                                vmin = vmin, vmax = vmax)
 
     #------------------------------------------------------------------------
-    def plot_single_psd(self, channel_index, freq_index_min, freq_index_max,
+    def plot_single_psd(self, channel_index,
                         axes = None, log_display = False) :
         """
         Plot a single PSD corresponding channel_index, between the values
         corresponding to freq_index_max and freq_index_min.
         """
-        psd = self.data[channel_index, freq_index_min : freq_index_max]
+        psd = self.data[channel_index, :]
         if log_display : psd = 10 * log(psd)
         if axes is not None :
-            return axes.plot(self.freqs[freq_index_min : freq_index_max], psd)
+            return axes.plot(self.freqs, psd)
         else :
-            return  plt.plot(self.freqs[freq_index_min : freq_index_max], psd)
+            return  plt.plot(self.freqs, psd)
 
     #------------------------------------------------------------------------
     def plot_all_psd(self, freq_index_min, freq_index_max,

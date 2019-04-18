@@ -1,9 +1,12 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from app.time_freq_UI import Ui_TimeFreq
+
+from app.ui.time_freq_UI import Ui_TimeFreq
 
 class TimeFreq(QMainWindow):
+    """Main Window for time-frequency
+    """
     def __init__(self, parent=None):
         super(TimeFreq, self).__init__(parent)
         self.ui = Ui_TimeFreq()
@@ -11,9 +14,8 @@ class TimeFreq(QMainWindow):
         self.ui.retranslateUi(self)
         self.setup_ui()
 
-    #---------------------------------------------------------------------
     # Setup functions for UI
-    #---------------------------------------------------------------------
+    #========================================================================
     def setup_ui(self) :
         self.filePaths = ['']
         self.type = None
@@ -62,16 +64,14 @@ class TimeFreq(QMainWindow):
         (self.ui.savePsdButton.clicked
         .connect(self.choose_save_path))
 
-
-    #---------------------------------------------------------------------
     # Data path and Data handling functions
-    #---------------------------------------------------------------------
+    #========================================================================
     def choose_data_path(self) :
         """Open window for choosing data path and updates the line"""
         try :
             from os.path import dirname
             self.filePaths, _ = QFileDialog.getOpenFileNames(
-                                        self,"Choose data path", "")
+                                        self,'Choose data path', '')
             self.ui.pathLine.setText(dirname(self.filePaths[0]))
 
             if len(self.filePaths) > 1 :
@@ -97,14 +97,14 @@ class TimeFreq(QMainWindow):
                 from mne import read_epochs
                 self.type = 'epochs'
                 self.data = read_epochs(self.filePaths[index])
-                print("Epoch file initialized")
+                print('Epoch file initialized')
             else :
                 from mne.io import read_raw_fif
                 self.type = 'raw'
                 self.data = read_raw_fif(self.filePaths[index])
-                print("Raw file initialized")
+                print('Raw file initialized')
         except :
-            print("Can't read the file")
+            print('Cannot read the file')
 
     #---------------------------------------------------------------------
     def set_data_box(self) :
@@ -142,10 +142,8 @@ class TimeFreq(QMainWindow):
         from backend.util import init_info_string
         self.ui.infoLabel.setText(init_info_string(self.data))
 
-
-    #---------------------------------------------------------------------
     # Parameters initialization
-    #---------------------------------------------------------------------
+    #========================================================================
     def init_parameters(self) :
         """Init the parameters in the text editor"""
         from backend.time_freq import \
@@ -154,10 +152,8 @@ class TimeFreq(QMainWindow):
         _init_psd_parameters(self)
         _init_tfr_parameters(self)
 
-
-    #---------------------------------------------------------------------
     # Channel picking functions
-    #---------------------------------------------------------------------
+    #========================================================================
     def open_channel_picker(self) :
         """Open the channel picker"""
         from app.select_channels import PickChannels
@@ -170,10 +166,8 @@ class TimeFreq(QMainWindow):
         """Set selected channels"""
         self.selected_ch = selected
 
-
-    #---------------------------------------------------------------------
     # Open PSD Visualizer
-    #---------------------------------------------------------------------
+    #========================================================================
     def open_psd_visualizer(self) :
         """Redirect to PSD Visualize app"""
         try :
@@ -181,8 +175,8 @@ class TimeFreq(QMainWindow):
             _read_parameters(self)
 
         except (AttributeError, FileNotFoundError, OSError) :
-            print("Can't find/read Parameters.\n"
-                  + "Please verify the path and extension")
+            print('Cannot find/read Parameters.\n'
+                  + 'Please verify the path and extension')
         else :
             if self.type == 'epochs' :
                 from backend.time_freq import _open_epochs_psd_visualizer
@@ -191,13 +185,11 @@ class TimeFreq(QMainWindow):
                 from backend.time_freq import _open_raw_psd_visualizer
                 _open_raw_psd_visualizer(self)
             else :
-                print("Please initialize the EEG data "
-                                + "before proceeding.")
+                print('Please initialize the EEG data '
+                                + 'before proceeding.')
 
-
-    #---------------------------------------------------------------------
     # Open TFR Visualizer
-    #---------------------------------------------------------------------
+    #========================================================================
     def open_tfr_visualizer(self) :
         """Open TFR Visualizer for epochs"""
         try :
@@ -205,16 +197,14 @@ class TimeFreq(QMainWindow):
             _read_parameters(self, True)
 
         except (AttributeError, FileNotFoundError, OSError) :
-            print("Can't find/read file.\n"
-                  + "Please verify the path and extension")
+            print('Cannot find/read file.\n'
+                  + 'Please verify the path and extension')
         else :
             from backend.time_freq import _open_tfr_visualizer
             _open_tfr_visualizer(self)
 
-
-    #---------------------------------------------------------------------
     # Saving
-    #---------------------------------------------------------------------
+    #========================================================================
     def choose_save_path(self) :
         """Open window for choosing save path"""
         if len(self.filePaths) == 1 :
@@ -225,8 +215,8 @@ class TimeFreq(QMainWindow):
         try :
             self.read_parameters()
         except (AttributeError, FileNotFoundError, OSError) :
-            print("Can't find/read file :(\n"
-                            + "Please verify the path and extension")
+            print('Cannot find/read file :(\n'
+                            + 'Please verify the path and extension')
         else :
             self.save_matrix()
 

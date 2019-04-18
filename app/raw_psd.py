@@ -5,7 +5,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
 from math import floor
-from app.raw_psd_UI import Ui_RawPSDWindow
+from app.ui.raw_psd_UI import Ui_RawPSDWindow
 
 class RawPSDWindow(QDialog):
     def __init__(self, rawPSD, parent=None):
@@ -23,11 +23,11 @@ class RawPSDWindow(QDialog):
         self.set_bindings()
         self.plot_changed()
 
-    #========================================================================
     # Setup functions
     #========================================================================
     def set_initial_values(self) :
-        """Setup initial values"""
+        """Setup initial values
+        """
         self.ui.frequencySlider.setMaximum(len(self.psd.freqs)-1)
         self.ui.frequencySlider.setMinimum(0)
         self.ui.frequencySlider.setValue(0)
@@ -36,15 +36,16 @@ class RawPSDWindow(QDialog):
         self.ui.fmin.setText(str(self.psd.freqs[0]))
         self.ui.fmax.setMaxLength(4)
         self.ui.fmax.setText(str(self.psd.freqs[-1]))
-        self.ui.vmax.setText("0")   #Auto scaling by default
+        self.ui.vmax.setText('0')       #Auto scaling by default
         self.ui.vmax.setMaxLength(6)
-        self.ui.selectPlotType.addItem("Matrix")
-        self.ui.selectPlotType.addItem("Topomap")
-        self.ui.selectPlotType.addItem("All PSD")
+        self.ui.selectPlotType.addItem('Matrix')
+        self.ui.selectPlotType.addItem('Topomap')
+        self.ui.selectPlotType.addItem('All PSD')
 
     #------------------------------------------------------------------------
     def set_bindings(self) :
-        """Set Bindings"""
+        """Set Bindings
+        """
         self.ui.fmin.editingFinished.connect(self.value_changed)
         self.ui.fmax.editingFinished.connect(self.value_changed)
         self.ui.vmax.editingFinished.connect(self.value_changed)
@@ -54,11 +55,12 @@ class RawPSDWindow(QDialog):
 
     #------------------------------------------------------------------------
     def set_canvas(self) :
-        """setup canvas for matplotlib"""
+        """setup canvas for matplotlib
+        """
         self.ui.figure = plt.figure(figsize = (10,10))
         self.ui.figure.patch.set_facecolor('None')
         self.ui.canvas = FigureCanvas(self.ui.figure)
-        self.ui.canvas.setStyleSheet("background-color:transparent;")
+        self.ui.canvas.setStyleSheet('background-color:transparent;')
         # Matplotlib toolbar
         self.ui.toolbar = NavigationToolbar(self.ui.canvas, self)
         self.ui.figureLayout.addWidget(self.ui.toolbar)
@@ -66,39 +68,41 @@ class RawPSDWindow(QDialog):
         self.ui.canvas.mpl_connect('button_press_event', self.onclick)
         self.ui.canvas.mpl_connect('pick_event', self.onclick_pick)
 
-    #========================================================================
     # Main Plotting function
     #========================================================================
     def plot_psd(self, f_index_min, f_index_max, vmax) :
-        """Plot the correct type of PSD"""
+        """Plot the correct type of PSD
+        """
         from app.error import show_error
         from backend.viz_raw import \
             _plot_topomap, _plot_matrix, _plot_all_psd
-        if self.plotType == "Topomap" :
+
+        if self.plotType == 'Topomap' :
             try :
                 _plot_topomap(self, f_index_min, f_index_max, vmax)
             except :
                 show_error(
-                    "No coordinates for topomap have been initialized :(")
+                    'No coordinates for topomap have been initialized :(')
                 self.ui.selectPlotType.setCurrentIndex(0)
 
-        if self.plotType == "Matrix" :
+        if self.plotType == 'Matrix' :
             _plot_matrix(self, f_index_min, f_index_max, vmax)
 
-        if self.plotType == "All PSD" :
+        if self.plotType == 'All PSD' :
             _plot_all_psd(self, f_index_min, f_index_max)
 
-    #=====================================================================
     # Updating the canvas functions
     #=====================================================================
     def plot_changed(self) :
-        """Update the plot type"""
+        """Update the plot type
+        """
         self.plotType = self.ui.selectPlotType.currentText()
         self.value_changed()
 
     #---------------------------------------------------------------------
     def slider_changed(self) :
-        """Get called when the slider is touched"""
+        """Get called when the slider is touched
+        """
         freq_index = self.ui.frequencySlider.value()
         freq = self.psd.freqs[freq_index]
         self.ui.fmin.setText(str(freq))
@@ -107,7 +111,8 @@ class RawPSDWindow(QDialog):
 
     #---------------------------------------------------------------------
     def value_changed(self) :
-        """ Get called if a value is changed """
+        """ Get called if a value is changed
+        """
         from backend.util import get_index_freq
 
         fmin = float(self.ui.fmin.text())
@@ -121,31 +126,38 @@ class RawPSDWindow(QDialog):
                                                  self.psd.freqs, fmin ,fmax)
         self.plot_psd(self.f_index_min, self.f_index_max, self.vmax)
 
-    #=====================================================================
     # Handle PSD single plotting on click
     #=====================================================================
     def onclick(self, click) :
-        """Get coordinates on the canvas and plot the corresponding PSD"""
+        """Get coordinates on the canvas and plot the corresponding PSD
+        """
         from backend.viz_raw import _plot_single_psd
 
-        if self.plotType == "Matrix" :
+        if self.plotType == 'Matrix' :
             channel_picked = click.ydata - 1
-        elif self.plotType == "Topomap" :
+        elif self.plotType == 'Topomap' :
             x, y = click.xdata, click.ydata
             channel_picked = self.psd.channel_index_from_coord(x, y)
         else :
             channel_picked = None
 
-        if (channel_picked is not None
-                and click.dblclick) :
+        if (channel_picked is not None and click.dblclick) :
             channel_picked = floor(channel_picked) + 1
-            _plot_single_psd(self, channel_picked, channel_picked)
+            _plot_single_psd(self, channel_picked)
 
     #---------------------------------------------------------------------
     def onclick_pick(self, click) :
-        if self.plotType == "All PSD" :
-            ch = click.artist.get_label()
-            self.annot.set_text(ch)
-            self.annot.xy = (click.mouseevent.xdata, click.mouseevent.ydata)
-            self.annot.set_visible(True)
-            self.ui.canvas.draw_idle()
+        """Get the line on click and plot a tooltip with the name of
+        the channel
+        """
+        from backend.util import _annot
+        from backend.viz_raw import _plot_single_psd
+
+        if self.plotType == 'All PSD' :
+            _annot(self, click, self.annot)
+            # If double click, we plot the PSD
+            if click.mouseevent.dblclick :
+                ch = str(click.artist.get_label())
+                index = self.psd.info['ch_names'].index(ch)
+                index = self.psd.picks.index(index)
+                _plot_single_psd(self, index + 1)

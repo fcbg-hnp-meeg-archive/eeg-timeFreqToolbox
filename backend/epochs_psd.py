@@ -288,37 +288,33 @@ class EpochsPSD :
 
     #--------------------------------------------------------------------------
     def plot_single_psd(self, epoch_index, channel_index,
-                        freq_index_min, freq_index_max,
                         axes = None, log_display = False) :
         """
         Plot a single PSD corresponding to epoch_index and channel_index,
         between the values corresponding to freq_index_max and
         freq_index_min.
         """
-        psd = self.data[epoch_index, channel_index,
-                        freq_index_min : freq_index_max]
+        psd = self.data[epoch_index, channel_index, :]
         if log_display : psd = 10 * log(psd)
         if axes is not None :
-            return axes.plot(self.freqs[freq_index_min : freq_index_max], psd)
+            return axes.plot(self.freqs, psd)
         else :
-            return plt.plot(self.freqs[freq_index_min : freq_index_max], psd)
+            return plt.plot(self.freqs, psd)
 
     #--------------------------------------------------------------------------
     def plot_single_avg_psd(self, channel_index,
-                            freq_index_min, freq_index_max,
                             axes = None, log_display = False) :
         """
         Plot a single PSD averaged over epochs and corresponding to
         channel_index, between the values corresponding to freq_index_max
         and freq_index_min.
         """
-        psd = mean(self.data[:, channel_index,
-                             freq_index_min : freq_index_max], axis = 0)
+        psd = mean(self.data[:, channel_index, :], axis = 0)
         if log_display : psd = 10 * log(psd)
         if axes is not None :
-            return axes.plot(self.freqs[freq_index_min : freq_index_max], psd)
+            return axes.plot(self.freqs, psd)
         else :
-            return plt.plot(self.freqs[freq_index_min : freq_index_max], psd)
+            return plt.plot(self.freqs, psd)
 
     #------------------------------------------------------------------------
     def plot_all_psd(self, epoch_index, freq_index_min, freq_index_max,

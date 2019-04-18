@@ -176,8 +176,7 @@ def _plot_single_psd(win, epoch_picked, channel_picked) :
     fig = plt.figure(figsize = (5, 5))
     ax = fig.add_subplot(1, 1, 1)
     win.psd.plot_single_psd(epoch_picked, channel_picked - 1,
-                             win.f_index_min, win.f_index_max,
-                             axes = ax, log_display = win.log)
+                            axes = ax, log_display = win.log)
 
     index_ch = win.psd.picks[channel_picked - 1]
     ax.set_title('PSD of Epoch {}, channel {}'.format(epoch_picked + 1,
@@ -197,8 +196,7 @@ def _plot_single_avg_psd(win, channel_picked) :
     fig = plt.figure(figsize = (5, 5))
     ax = fig.add_subplot(1, 1, 1)
     win.psd.plot_single_avg_psd(
-        channel_picked - 1, win.f_index_min, win.f_index_max,
-        axes = ax, log_display = win.log)
+        channel_picked - 1, axes = ax, log_display = win.log)
 
     index_ch = win.psd.picks[channel_picked - 1]
     ax.set_title('Average PSD of channel {}'.format(
@@ -214,7 +212,7 @@ def _plot_single_avg_psd(win, channel_picked) :
 def _set_ax_single_psd(win, ax) :
     """Set axes values for a single PSD plot
     """
-    ax.set_xlim([win.psd.freqs[win.f_index_min],
-                 win.psd.freqs[win.f_index_max]])
+    ax.set_xlim([win.psd.freqs[0],
+                 win.psd.freqs[-1]])
     ax.set_xlabel('Frequency (Hz)')
     ax.set_ylabel('Power (µV²/Hz)')

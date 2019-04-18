@@ -8,7 +8,7 @@ from matplotlib.backends.backend_qt5agg \
 import matplotlib.pyplot as plt
 from math import floor
 
-from app.epochs_psd_UI import Ui_EpochsPSDWindow
+from app.ui.epochs_psd_UI import Ui_EpochsPSDWindow
 
 class EpochsPSDWindow(QDialog):
     """PSDWindow class, which enable to visualize the PSDs for epochs
@@ -30,7 +30,6 @@ class EpochsPSDWindow(QDialog):
         self.set_bindings()
         self.plot_change()
 
-    #=====================================================================
     # Setup functions
     #=====================================================================
     def set_initial_values(self) :
@@ -84,7 +83,6 @@ class EpochsPSDWindow(QDialog):
         self.ui.canvas.mpl_connect('button_press_event', self.onclick)
         self.ui.canvas.mpl_connect('pick_event', self.onclick_pick)
 
-    #=====================================================================
     # Main Plotting function
     #=====================================================================
     def plot_psd(self, epoch_index, f_index_min, f_index_max, vmax) :
@@ -110,7 +108,6 @@ class EpochsPSDWindow(QDialog):
         if self.plotType == 'All PSD' :
             _plot_all_psd(self, epoch_index, f_index_min, f_index_max)
 
-    #=====================================================================
     # Updating the canvas functions
     #=====================================================================
     def plot_change(self) :
@@ -152,7 +149,6 @@ class EpochsPSDWindow(QDialog):
         self.ui.fmax.setText(str(freq))
         self.value_changed()
 
-    #=====================================================================
     # Handle PSD single plotting on click
     #=====================================================================
     def onclick(self, click) :
@@ -196,39 +192,47 @@ class EpochsPSDWindow(QDialog):
 
     #---------------------------------------------------------------------
     def onclick_pick(self, click) :
+        """Get the line on click and plot a tooltip with the name of
+        the channel
+        """
+        from backend.util import _annot
+        from backend.viz_epochs import _plot_single_avg_psd, _plot_single_psd
+
         if self.plotType == 'All PSD' :
+            # Handle click on all PSD plots
             ax_picked = click.mouseevent.inaxes
             if (self.ui.showMean.checkState()
                     and self.ui.showSingleEpoch.checkState()) :
 
                 if ax_picked.is_first_col() :
-                    ch = click.artist.get_label()
-                    self.annot_epoch.set_text(ch)
-                    self.annot_epoch.xy = (click.mouseevent.xdata,
-                                           click.mouseevent.ydata)
-                    self.annot_epoch.set_visible(True)
-                    self.ui.canvas.draw_idle()
+                    _annot(self, click, self.annot_epoch)
 
                 else :
-                    ch = click.artist.get_label()
-                    self.annot_avg.set_text(ch)
-                    self.annot_avg.xy = (click.mouseevent.xdata,
-                                           click.mouseevent.ydata)
-                    self.annot_avg.set_visible(True)
-                    self.ui.canvas.draw_idle()
+                    _annot(self, click, self.annot_avg)
 
             elif self.ui.showSingleEpoch.checkState() :
-                ch = click.artist.get_label()
-                self.annot_epoch.set_text(ch)
-                self.annot_epoch.xy = (click.mouseevent.xdata,
-                                       click.mouseevent.ydata)
-                self.annot_epoch.set_visible(True)
-                self.ui.canvas.draw_idle()
+                _annot(self, click, self.annot_epoch)
 
             elif self.ui.showMean.checkState() :
-                ch = click.artist.get_label()
-                self.annot_avg.set_text(ch)
-                self.annot_avg.xy = (click.mouseevent.xdata,
-                                       click.mouseevent.ydata)
-                self.annot_avg.set_visible(True)
-                self.ui.canvas.draw_idle()
+                _annot(self, click, self.annot_avg)
+
+            if click.mouseevent.dblclick :
+                epoch_picked   = self.ui.epochsSlider.value()
+                ch = str(click.artist.get_label())
+                index = self.psd.info['ch_names'].index(ch)
+                index = self.psd.picks.index(index)
+
+                if (self.ui.showMean.checkState()
+                        and self.ui.showSingleEpoch.checkState()) :
+
+                    if ax_picked.is_first_col() :
+                        _plot_single_psd(self, epoch_picked, index + 1)
+
+                    else :
+                        _plot_single_avg_psd(self, index + 1)
+
+                elif self.ui.showSingleEpoch.checkState() :
+                    _plot_single_psd(self, epoch_picked, index + 1)
+
+                elif self.ui.showMean.checkState() :
+                    _plot_single_avg_psd(self, index + 1)

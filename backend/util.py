@@ -67,3 +67,14 @@ def get_index_freq(freqs, fmin, fmax) :
     f_index_max = min(len(freqs) - 1, f_index_max)
     f_index_min = max(0, f_index_min)
     return f_index_min, f_index_max
+
+#---------------------------------------------------------------------
+def _annot(win, click, annot) :
+    """Set the annotation on click
+    """
+    ch = click.artist.get_label()
+    annot.set_text(ch)
+    annot.xy = (click.mouseevent.xdata,
+                           click.mouseevent.ydata)
+    annot.set_visible(True)
+    win.ui.canvas.draw_idle()
