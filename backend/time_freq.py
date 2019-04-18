@@ -3,7 +3,8 @@ from app.error import show_error
 # Miscellaneous functions for reading, saving and initializing parameters
 #---------------------------------------------------------------------
 def _init_psd_parameters(self) :
-    """Set the parameters in the parameters text slot"""
+    """Set the parameters in the parameters text slot
+    """
     text = 'fmin=0\nfmax=100\ntmin=Default\ntmax=Default\n'
     if self.ui.psdMethod.currentText() == 'welch' :
         text = text + 'n_fft=Default\nn_per_seg=Default\nn_overlap=0'
@@ -13,7 +14,8 @@ def _init_psd_parameters(self) :
 
 #---------------------------------------------------------------------
 def _init_tfr_parameters(self) :
-    """Set the parameters in the parameters text slot"""
+    """Set the parameters in the parameters text slot
+    """
     text = 'fmin=5\nfmax=100'
     if self.ui.tfrMethodBox.currentText() == 'multitaper' :
         text = text + '\nfreq_step=1\ntime_window=0.5\ntime_bandwidth=4'
@@ -25,7 +27,8 @@ def _init_tfr_parameters(self) :
 
 #---------------------------------------------------------------------
 def _save_matrix(self) :
-    """Save the matrix containing the PSD"""
+    """Save the matrix containing the PSD
+    """
     n_files = len(self.filePaths)
     if n_files == 1 :
         print('Saving one file ...', end = '')
@@ -81,7 +84,8 @@ def _read_parameters(self, tfr = False) :
 
 #---------------------------------------------------------------------
 def _init_picks(self) :
-    """Init list with picks"""
+    """Init list with picks
+    """
     try :
         picked_ch = [self.data.info['ch_names'].index(name)
                      for name in self.selected_ch]
@@ -98,7 +102,8 @@ def _init_picks(self) :
 # PSD - Init the parameters and open the app functions
 #---------------------------------------------------------------------
 def _init_nfft(self) :
-    """Init the n_fft parameter"""
+    """Init the n_fft parameter
+    """
     from backend.util import int_
 
     n_fft    = int_(self.params.get('n_fft', None))
@@ -111,75 +116,76 @@ def _init_nfft(self) :
 
 #---------------------------------------------------------------------
 def _init_epochs_psd(self) :
-    """Initialize the instance of EpochsPSD"""
+    """Initialize the instance of EpochsPSD
+    """
     from backend.epochs_psd import EpochsPSD
     from backend.util import float_, int_
 
     if self.ui.psdMethod.currentText() == 'welch' :
         n_fft = _init_nfft(self)
-        self.psd = EpochsPSD(self.data,
-                             fmin       = float_(self.params['fmin']),
-                             fmax       = float_(self.params['fmax']),
-                             tmin       = float_(self.params['tmin']),
-                             tmax       = float_(self.params['tmax']),
-                             method     = 'welch',
-                             n_fft      = n_fft,
-                             n_per_seg  = int_(self.params
-                                               .get('n_per_seg', n_fft)),
-                             n_overlap  = int_(self.params
-                                               .get('n_overlap', 0)),
-                             picks      = _init_picks(self),
-                             montage    = self.montage)
+        self.psd = EpochsPSD(
+            self.data,
+            fmin       = float_(self.params['fmin']),
+            fmax       = float_(self.params['fmax']),
+            tmin       = float_(self.params['tmin']),
+            tmax       = float_(self.params['tmax']),
+            method     = 'welch',
+            n_fft      = n_fft,
+            n_per_seg  = int_(self.params.get('n_per_seg', n_fft)),
+            n_overlap  = int_(self.params.get('n_overlap', 0)),
+            picks      = _init_picks(self),
+            montage    = self.montage)
 
     if self.ui.psdMethod.currentText() == 'multitaper' :
-        self.psd = EpochsPSD(self.data,
-                             fmin       = float_(self.params['fmin']),
-                             fmax       = float_(self.params['fmax']),
-                             tmin       = float_(self.params['tmin']),
-                             tmax       = float_(self.params['tmax']),
-                             method     = 'multitaper',
-                             bandwidth  = float_(self.params
-                                                 .get('bandwidth', 4)),
-                             picks      = _init_picks(self),
-                             montage    = self.montage)
+        self.psd = EpochsPSD(
+            self.data,
+            fmin       = float_(self.params['fmin']),
+            fmax       = float_(self.params['fmax']),
+            tmin       = float_(self.params['tmin']),
+            tmax       = float_(self.params['tmax']),
+            method     = 'multitaper',
+            bandwidth  = float_(self.params.get('bandwidth', 4)),
+            picks      = _init_picks(self),
+            montage    = self.montage)
 
 #---------------------------------------------------------------------
 def _init_raw_psd(self) :
-    """Initialize the instance of RawPSD"""
+    """Initialize the instance of RawPSD
+    """
     from backend.raw_psd import RawPSD
     from backend.util import float_, int_
 
     if self.ui.psdMethod.currentText() == 'welch' :
         n_fft = _init_nfft(self)
-        self.psd = RawPSD(self.data,
-                          fmin       = float_(self.params['fmin']),
-                          fmax       = float_(self.params['fmax']),
-                          tmin       = float_(self.params['tmin']),
-                          tmax       = float_(self.params['tmax']),
-                          method     = 'welch',
-                          n_fft      = n_fft,
-                          n_per_seg  = int_(self.params
-                                            .get('n_per_seg', n_fft)),
-                          n_overlap  = int_(self.params
-                                            .get('n_overlap', 0)),
-                          picks      = _init_picks(self),
-                          montage    = self.montage)
+        self.psd = RawPSD(
+            self.data,
+            fmin       = float_(self.params['fmin']),
+            fmax       = float_(self.params['fmax']),
+            tmin       = float_(self.params['tmin']),
+            tmax       = float_(self.params['tmax']),
+            method     = 'welch',
+            n_fft      = n_fft,
+            n_per_seg  = int_(self.params.get('n_per_seg', n_fft)),
+            n_overlap  = int_(self.params.get('n_overlap', 0)),
+            picks      = _init_picks(self),
+            montage    = self.montage)
 
     if self.ui.psdMethod.currentText() == 'multitaper' :
-        self.psd = RawPSD(self.data,
-                          fmin       = float_(self.params['fmin']),
-                          fmax       = float_(self.params['fmax']),
-                          tmin       = float_(self.params['tmin']),
-                          tmax       = float_(self.params['tmax']),
-                          method     = 'multitaper',
-                          bandwidth  = float_(self.params
-                                           .get('bandwidth', 4)),
-                          picks      = _init_picks(self),
-                          montage    = self.montage)
+        self.psd = RawPSD(
+            self.data,
+            fmin       = float_(self.params['fmin']),
+            fmax       = float_(self.params['fmax']),
+            tmin       = float_(self.params['tmin']),
+            tmax       = float_(self.params['tmax']),
+            method     = 'multitaper',
+            bandwidth  = float_(self.params.get('bandwidth', 4)),
+            picks      = _init_picks(self),
+            montage    = self.montage)
 
 #---------------------------------------------------------------------
 def _open_epochs_psd_visualizer(self) :
-    """Open PSD visualizer for epochs data"""
+    """Open PSD visualizer for epochs data
+    """
     from app.epochs_psd import EpochsPSDWindow
 
     _init_epochs_psd(self)
@@ -188,7 +194,8 @@ def _open_epochs_psd_visualizer(self) :
 
 #---------------------------------------------------------------------
 def _open_raw_psd_visualizer(self) :
-    """Open PSD Visualizer for raw type data"""
+    """Open PSD Visualizer for raw type data
+    """
     from app.raw_psd import RawPSDWindow
 
     _init_raw_psd(self)
@@ -200,7 +207,8 @@ def _open_raw_psd_visualizer(self) :
 # TFR - Init the parameters and open the app functions
 #---------------------------------------------------------------------
 def _init_avg_tfr(self) :
-    """Init tfr from parameters"""
+    """Init tfr from parameters
+    """
     from backend.avg_epochs_tfr import AvgEpochsTFR
     from backend.util import float_, int_
     from numpy import arange
@@ -225,7 +233,7 @@ def _init_avg_tfr(self) :
 
     except ValueError :
         print('Time-Window or n_cycles is too high for'
-              + 'the length of the signal :(\n'
+              + 'the length of the signal.\n'
               + 'Please use a smaller Time-Window'
               + ' or less cycles.')
 
@@ -235,7 +243,8 @@ def _init_avg_tfr(self) :
 
 #---------------------------------------------------------------------
 def _init_ncycles(self, freqs) :
-    """Init the n_cycles parameter"""
+    """Init the n_cycles parameter
+    """
     from backend.util import float_
 
     # Handling of the time window parameter for multitaper and morlet method
@@ -254,7 +263,8 @@ def _init_ncycles(self, freqs) :
 
 #---------------------------------------------------------------------
 def _open_tfr_visualizer(self) :
-    """Open TFR Visualizer"""
+    """Open TFR Visualizer
+    """
     from app.avg_epochs_tfr import AvgTFRWindow
 
     _init_avg_tfr(self)
