@@ -12,11 +12,11 @@ win --> instance of EpochsPSDWindow
 
 
 # ---------------------------------------------------------------------
-def _plot_topomaps(win, epoch_index, f_index_min, f_index_max, vmax):
+def _plot_topomaps(win):
     """Plot the topomaps
     """
     win.ui.figure.clear()
-    _topomaps_adjust(win, epoch_index, f_index_min, f_index_max, vmax)
+    _topomaps_adjust(win)
     _add_colorbar(win, [0.915, 0.15, 0.01, 0.7])
     win.ui.figure.subplots_adjust(top=0.9, right=0.8,
                                   left=0.1, bottom=0.1)
@@ -24,11 +24,11 @@ def _plot_topomaps(win, epoch_index, f_index_min, f_index_max, vmax):
 
 
 # ---------------------------------------------------------------------
-def _plot_matrix(win, epoch_index, f_index_min, f_index_max, vmax):
+def _plot_matrix(win):
     """Plot the Matrix
     """
     win.ui.figure.clear()
-    _matrix_adjust(win, epoch_index, f_index_min, f_index_max, vmax)
+    _matrix_adjust(win)
     _add_colorbar(win, [0.915, 0.15, 0.01, 0.7])
     win.ui.figure.subplots_adjust(top=0.85, right=0.8,
                                   left=0.1, bottom=0.1)
@@ -36,11 +36,11 @@ def _plot_matrix(win, epoch_index, f_index_min, f_index_max, vmax):
 
 
 # ---------------------------------------------------------------------
-def _plot_all_psd(win, epoch_index, f_index_min, f_index_max):
+def _plot_all_psd(win):
     """Plot all the PSD
     """
     win.ui.figure.clear()
-    _plot_all_psd_adjust(win, epoch_index, f_index_min, f_index_max)
+    _plot_all_psd_adjust(win)
     win.ui.figure.subplots_adjust(top=0.9, right=0.9,
                                   left=0.1, bottom=0.1)
     win.ui.canvas.draw()
@@ -65,7 +65,7 @@ def _add_colorbar(win, position):
 
 # Adjusting the plots
 # =====================================================================
-def _topomaps_adjust(win, epoch_index, f_index_min, f_index_max, vmax):
+def _topomaps_adjust(win):
     """Plot the good number of subplots and update cbar_image instance
     """
 
@@ -79,26 +79,25 @@ def _topomaps_adjust(win, epoch_index, f_index_min, f_index_max, vmax):
     if win.ui.showSingleEpoch.checkState():
         ax = win.ui.figure.add_subplot(1, nbFrames, 1)
         win.cbar_image, _ = win.psd.plot_topomap_band(
-                                epoch_index, f_index_min, f_index_max,
-                                axes=ax, vmin=win.vmin, vmax=vmax,
+                                win.epoch_index,
+                                win.f_index_min, win.f_index_max,
+                                axes=ax, vmin=win.vmin, vmax=win.vmax,
                                 log_display=win.log)
-
-        ax.set_title('Epoch {}'.format(epoch_index + 1),
+        ax.set_title('Epoch {}'.format(win.epoch_index + 1),
                      fontsize=15, fontweight='light')
 
     # plot average data if showMean is checked
     if win.ui.showMean.checkState():
         ax = win.ui.figure.add_subplot(1, nbFrames, nbFrames)
         win.cbar_image, _ = win.psd.plot_avg_topomap_band(
-                                f_index_min, f_index_max, axes=ax,
-                                vmin=win.vmin, vmax=vmax,
+                                win.f_index_min, win.f_index_max, axes=ax,
+                                vmin=win.vmin, vmax=win.vmax,
                                 log_display=win.log)
-
         ax.set_title('Average', fontsize=15, fontweight='light')
 
 
 # ---------------------------------------------------------------------
-def _matrix_adjust(win, epoch_index, f_index_min, f_index_max, vmax):
+def _matrix_adjust(win):
     """Plot the matrix and update cbar_image instance
     """
     if (win.ui.showMean.checkState()
@@ -111,11 +110,12 @@ def _matrix_adjust(win, epoch_index, f_index_min, f_index_max, vmax):
     if win.ui.showSingleEpoch.checkState():
         ax = win.ui.figure.add_subplot(1, nbFrames, 1)
         win.cbar_image = win.psd.plot_matrix(
-                              epoch_index, f_index_min, f_index_max,
-                              vmin=win.vmin, vmax=vmax,
+                              win.epoch_index,
+                              win.f_index_min, win.f_index_max,
+                              vmin=win.vmin, vmax=win.vmax,
                               axes=ax, log_display=win.log)
         ax.axis('tight')
-        ax.set_title('Matrix for epoch {}'.format(epoch_index + 1),
+        ax.set_title('Matrix for epoch {}'.format(win.epoch_index + 1),
                      fontsize=15, fontweight='light')
         ax.set_xlabel('Frequencies (Hz)')
         ax.set_ylabel('Channels')
@@ -125,8 +125,8 @@ def _matrix_adjust(win, epoch_index, f_index_min, f_index_max, vmax):
     if win.ui.showMean.checkState():
         ax = win.ui.figure.add_subplot(1, nbFrames, nbFrames)
         win.cbar_image = win.psd.plot_avg_matrix(
-                              f_index_min, f_index_max, axes=ax,
-                              vmin=win.vmin, vmax=vmax,
+                              win.f_index_min, win.f_index_max, axes=ax,
+                              vmin=win.vmin, vmax=win.vmax,
                               log_display=win.log)
         ax.axis('tight')
         ax.set_title('Average Matrix', fontsize=15,
@@ -137,7 +137,7 @@ def _matrix_adjust(win, epoch_index, f_index_min, f_index_max, vmax):
 
 
 # ---------------------------------------------------------------------
-def _plot_all_psd_adjust(win, epoch_index, f_index_min, f_index_max):
+def _plot_all_psd_adjust(win):
     """Plot all the PSD
     """
     if (win.ui.showMean.checkState()
@@ -150,10 +150,10 @@ def _plot_all_psd_adjust(win, epoch_index, f_index_min, f_index_max):
     if win.ui.showSingleEpoch.checkState():
         ax = win.ui.figure.add_subplot(1, nbFrames, 1)
         win.psd.plot_all_psd(
-            epoch_index, f_index_min, f_index_max,
+            win.epoch_index, win.f_index_min, win.f_index_max,
             axes=ax, log_display=win.log)
         ax.axis('tight')
-        ax.set_title('PSD for epoch {}'.format(epoch_index + 1),
+        ax.set_title('PSD for epoch {}'.format(win.epoch_index + 1),
                      fontsize=15, fontweight='light')
         ax.set_xlabel('Frequencies (Hz)')
         ax.set_ylabel('Power')
@@ -166,7 +166,7 @@ def _plot_all_psd_adjust(win, epoch_index, f_index_min, f_index_max):
     if win.ui.showMean.checkState():
         ax = win.ui.figure.add_subplot(1, nbFrames, nbFrames)
         win.psd.plot_all_avg_psd(
-            f_index_min, f_index_max,
+            win.f_index_min, win.f_index_max,
             axes=ax, log_display=win.log)
         ax.axis('tight')
         ax.set_title('Average PSD', fontsize=15,

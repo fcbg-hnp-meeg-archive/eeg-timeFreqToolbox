@@ -123,6 +123,8 @@ class RawPSDWindow(QDialog):
 
         fmin = float(self.ui.fmin.text())
         fmax = float(self.ui.fmax.text())
+        self.f_index_min, self.f_index_max = get_index_freq(
+                                                 self.psd.freqs, fmin, fmax)
         self.vmax = self.ui.vmax.text()
         self.vmin = self.ui.vmin.text()
         try:
@@ -133,9 +135,8 @@ class RawPSDWindow(QDialog):
             self.vmin = float(self.vmin)
         except ValueError:
             self.vmin = None
+
         self.log = self.ui.displayLog.checkState()
-        self.f_index_min, self.f_index_max = get_index_freq(
-                                                 self.psd.freqs, fmin, fmax)
         self.plot_psd()
 
     # Handle PSD single plotting on click

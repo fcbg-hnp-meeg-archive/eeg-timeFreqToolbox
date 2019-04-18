@@ -48,8 +48,8 @@ class EpochsPSDWindow(QDialog):
         self.ui.fmin.setText(str(self.psd.freqs[0]))
         self.ui.fmax.setMaxLength(4)
         self.ui.fmax.setText(str(self.psd.freqs[-1]))
-        self.ui.vmax.setText('0')
         self.ui.vmax.setMaxLength(6)
+        self.ui.vmin.setMaxLength(6)
         self.ui.showMean.setCheckState(2)
         self.ui.selectPlotType.addItem('Matrix')
         self.ui.selectPlotType.addItem('Topomap')
@@ -86,7 +86,7 @@ class EpochsPSDWindow(QDialog):
 
     # Main Plotting function
     # =====================================================================
-    def plot_psd(self, epoch_index, f_index_min, f_index_max, vmax):
+    def plot_psd(self):
         """Plot the correct type of PSD
         """
         from backend.viz_epochs import \
@@ -94,8 +94,7 @@ class EpochsPSDWindow(QDialog):
 
         if self.plotType == 'Topomap':
             try:
-                _plot_topomaps(self, epoch_index,
-                               f_index_min, f_index_max, vmax)
+                _plot_topomaps(self)
             except ValueError:
                 # If no topomap is initialized, error is displayed
                 from app.error import show_error
@@ -104,10 +103,10 @@ class EpochsPSDWindow(QDialog):
                 self.ui.selectPlotType.setCurrentIndex(0)
 
         if self.plotType == 'Matrix':
-            _plot_matrix(self, epoch_index, f_index_min, f_index_max, vmax)
+            _plot_matrix(self)
 
         if self.plotType == 'All PSD':
-            _plot_all_psd(self, epoch_index, f_index_min, f_index_max)
+            _plot_all_psd(self)
 
     # Updating the canvas functions
     # =====================================================================
@@ -125,20 +124,22 @@ class EpochsPSDWindow(QDialog):
 
         fmin = float(self.ui.fmin.text())
         fmax = float(self.ui.fmax.text())
-        self.vmax = float(self.ui.vmax.text())
-        self.log = self.ui.displayLog.checkState()
-        self.vmin = 0
-
-        if self.log:
-            self.vmin = None
-        if self.vmax == 0 and not self.log:
-            self.vmax = None
-
         self.f_index_min, self.f_index_max = get_index_freq(
                                                 self.psd.freqs, fmin, fmax)
-        epoch_index = self.ui.epochsSlider.value()
-        self.plot_psd(epoch_index, self.f_index_min, self.f_index_max,
-                      self.vmax)
+        self.vmax = self.ui.vmax.text()
+        self.vmin = self.ui.vmin.text()
+        try:
+            self.vmax = float(self.vmax)
+        except ValueError:
+            self.vmax = None
+        try:
+            self.vmin = float(self.vmin)
+        except ValueError:
+            self.vmin = None
+
+        self.log = self.ui.displayLog.checkState()
+        self.epoch_index = self.ui.epochsSlider.value()
+        self.plot_psd()
 
     # ---------------------------------------------------------------------
     def slider_changed(self):
