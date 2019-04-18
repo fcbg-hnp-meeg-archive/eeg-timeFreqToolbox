@@ -39,8 +39,10 @@ class RawPSDWindow(QDialog):
         self.ui.fmin.setText(str(self.psd.freqs[0]))
         self.ui.fmax.setMaxLength(4)
         self.ui.fmax.setText(str(self.psd.freqs[-1]))
-        self.ui.vmax.setText('0')       # Auto scaling by default
+        self.ui.vmax.setText('')       # Auto scaling by default
         self.ui.vmax.setMaxLength(6)
+        self.ui.vmin.setText('')       # Auto scaling by default
+        self.ui.vmin.setMaxLength(6)
         self.ui.selectPlotType.addItem('Matrix')
         self.ui.selectPlotType.addItem('Topomap')
         self.ui.selectPlotType.addItem('All PSD')
@@ -52,6 +54,7 @@ class RawPSDWindow(QDialog):
         self.ui.fmin.editingFinished.connect(self.value_changed)
         self.ui.fmax.editingFinished.connect(self.value_changed)
         self.ui.vmax.editingFinished.connect(self.value_changed)
+        self.ui.vmin.editingFinished.connect(self.value_changed)
         self.ui.selectPlotType.currentIndexChanged.connect(self.plot_changed)
         self.ui.displayLog.stateChanged.connect(self.value_changed)
         self.ui.frequencySlider.valueChanged.connect(self.slider_changed)
@@ -73,7 +76,7 @@ class RawPSDWindow(QDialog):
 
     # Main Plotting function
     # ========================================================================
-    def plot_psd(self, f_index_min, f_index_max, vmax):
+    def plot_psd(self):
         """Plot the correct type of PSD
         """
         from app.error import show_error
@@ -82,17 +85,17 @@ class RawPSDWindow(QDialog):
 
         if self.plotType == 'Topomap':
             try:
-                _plot_topomap(self, f_index_min, f_index_max, vmax)
+                _plot_topomap(self)
             except ValueError:
                 show_error(
                     'No coordinates for topomap have been initialized:(')
                 self.ui.selectPlotType.setCurrentIndex(0)
 
         if self.plotType == 'Matrix':
-            _plot_matrix(self, f_index_min, f_index_max, vmax)
+            _plot_matrix(self)
 
         if self.plotType == 'All PSD':
-            _plot_all_psd(self, f_index_min, f_index_max)
+            _plot_all_psd(self)
 
     # Updating the canvas functions
     # =====================================================================
@@ -120,16 +123,20 @@ class RawPSDWindow(QDialog):
 
         fmin = float(self.ui.fmin.text())
         fmax = float(self.ui.fmax.text())
-        self.vmax = float(self.ui.vmax.text())
-        self.log = self.ui.displayLog.checkState()
-        self.vmin = 0
-        if self.log:
-            self.vmin = None
-        if self.vmax == 0 and not self.log:
+        self.vmax = self.ui.vmax.text()
+        self.vmin = self.ui.vmin.text()
+        try:
+            self.vmax = float(self.vmax)
+        except ValueError:
             self.vmax = None
+        try:
+            self.vmin = float(self.vmin)
+        except ValueError:
+            self.vmin = None
+        self.log = self.ui.displayLog.checkState()
         self.f_index_min, self.f_index_max = get_index_freq(
                                                  self.psd.freqs, fmin, fmax)
-        self.plot_psd(self.f_index_min, self.f_index_max, self.vmax)
+        self.plot_psd()
 
     # Handle PSD single plotting on click
     # =====================================================================
