@@ -26,24 +26,14 @@ class TimeFreq(QMainWindow):
         self.setup_boxes()
         self.init_parameters()
 
-<<<<<<< HEAD
-    #---------------------------------------------------------------------
-    def setup_boxes(self) :
+    # ---------------------------------------------------------------------
+    def setup_boxes(self):
         """Setup the boxes with names"""
         self.ui.psdMethod.addItem('welch')
         self.ui.psdMethod.addItem('multitaper')
         self.ui.tfrMethodBox.addItem('morlet')
-=======
-    # ---------------------------------------------------------------------
-    def setup_boxes(self):
-        """Setup the boxes with names
-        """
-        self.ui.psdMethod.addItem('welch')
-        self.ui.psdMethod.addItem('multitaper')
->>>>>>> dev
         self.ui.tfrMethodBox.addItem('multitaper')
         self.ui.tfrMethodBox.addItem('stockwell')
-
 
     # ---------------------------------------------------------------------
     def set_bindings(self):

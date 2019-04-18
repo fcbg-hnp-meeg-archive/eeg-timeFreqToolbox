@@ -112,19 +112,11 @@ def _init_nfft(self):
     """
     from backend.util import int_
 
-<<<<<<< HEAD
-    n_fft    = int_(self.params.get('n_fft', None))
-    if n_fft is None :
-        if self.type == 'raw' :
-             n_fft = min(self.data.n_times, 2048)
-        if self.type == 'epochs' :
-=======
     n_fft = int_(self.params.get('n_fft', None))
     if n_fft is None:
         if self.type == 'raw':
             n_fft = min(self.data.n_times, 2048)
         if self.type == 'epochs':
->>>>>>> dev
             n_fft = min(len(self.data.times), 2048)
     return n_fft
 
