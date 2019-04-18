@@ -14,12 +14,12 @@ For now, the app can only treat the data to display the power spectrum density o
 
 ## Quick Tutorial
 
-First import your file which can be either a raw file (format `*.fif` or `*.sef`), or epoched data (format `.epo-fif`).
+First import your file which can be either a raw file (format `*.fif`), or epoched data (format `.epo-fif`).
 
 This toolbox does not perform any preprocessing in the file, so you have to preprocess the signal before using it in this toolbox, by removing and interpolating bad channels, applyings correct filters and applying a montage to display the topomaps.
 
 
- * **PSD (Power Spectrum Density)** : Which computes the power spectrum density of the signal. You can display the results either in the form of a matrix (Simple plot of individual Channels by Frequencies), or as a topomap (Power of electrode represented on the scalp). It is also possible to run across the different epochs if the file is epoched data.
+ * **PSD (Power Spectrum Density)** : Which computes the power spectrum density of the signal. You can display the results either in the form of a matrix (Simple plot of individual Channels by Frequencies), or as a topomap (Power of electrode represented on the scalp). It is also possible to run across the different epochs if the file is epoched data. This gui also features a handy double click function that displays the PSD of the channel selected with the mouse.
 
   ![](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/blob/master/assets/psdwindow.png)
 
@@ -32,6 +32,6 @@ This toolbox does not perform any preprocessing in the file, so you have to prep
 
 You can easily import parameters using the import button in the app. The parameters are setup in a simple txt file, in the following way :
 
-`param_id = value` or `param_id = value1, value2, ...` if several values are expected.
+`param_id = value`
 
-Check here for a detailed description of parameters : [Click Here !](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/help_parameters.md)
+You can go on `tutorial` to find more informations about the parameters in the markdown file.
