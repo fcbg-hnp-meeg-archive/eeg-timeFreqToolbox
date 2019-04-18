@@ -231,24 +231,13 @@ def _init_avg_tfr(self):
 
     picks = _init_picks(self)
 
-    try:
-        self.avgTFR = AvgEpochsTFR(
-            self.data, freqs, n_cycles,
-            method=self.ui.tfrMethodBox.currentText(),
-            time_bandwidth=float_(self.params.get('time_bandwidth', 4)),
-            width=float_(self.params.get('width', 1)),
-            n_fft=n_fft,
-            picks=picks)
-
-    except ValueError:
-        print('Time-Window or n_cycles is too high for'
-              + 'the length of the signal.\n'
-              + 'Please use a smaller Time-Window'
-              + ' or less cycles.')
-
-    except AttributeError:
-        print('Please initialize the EEG data before'
-              + ' proceeding.')
+    self.avgTFR = AvgEpochsTFR(
+        self.data, freqs, n_cycles,
+        method=self.ui.tfrMethodBox.currentText(),
+        time_bandwidth=float_(self.params.get('time_bandwidth', 4)),
+        width=float_(self.params.get('width', 1)),
+        n_fft=n_fft,
+        picks=picks)
 
 
 # ---------------------------------------------------------------------
@@ -277,7 +266,17 @@ def _open_tfr_visualizer(self):
     """Open TFR Visualizer
     """
     from app.avg_epochs_tfr import AvgTFRWindow
+    try:
+        _init_avg_tfr(self)
+        psdVisualizer = AvgTFRWindow(self.avgTFR, parent=self)
+        psdVisualizer.show()
 
-    _init_avg_tfr(self)
-    psdVisualizer = AvgTFRWindow(self.avgTFR, parent=self)
-    psdVisualizer.show()
+    except AttributeError:
+        print('Please initialize the EEG data before'
+              + ' proceeding.')
+
+    except ValueError:
+        print('Time-Window or n_cycles is too high for'
+              + 'the length of the signal.\n'
+              + 'Please use a smaller Time-Window'
+              + ' or less cycles.')

@@ -72,8 +72,8 @@ class TimeFreq(QMainWindow):
     def choose_data_path(self):
         """Open window for choosing data path and updates the line
         """
+        from os.path import dirname
         try:
-            from os.path import dirname
             self.filePaths, _ = QFileDialog.getOpenFileNames(
                                         self, 'Choose data path', '')
             self.ui.pathLine.setText(dirname(self.filePaths[0]))
@@ -83,35 +83,28 @@ class TimeFreq(QMainWindow):
                     dirname(self.filePaths[0]) + ':: Multiple files')
         except Exception as e:
             print(e)
-            print('error while trying to read data')
+            print('Error while trying to read data')
         else:
-            from backend.util import eeg_to_montage
-
             self.set_data_box()
-            self.read_data()
-            self.set_informations()
-            self.montage = eeg_to_montage(self.data)
-            self.selected_ch = [name for name in self.data.info['ch_names']]
+            self.data_box_changed()
 
     # ---------------------------------------------------------------------
     def read_data(self):
         """Reads the data from path
         """
         index = self.ui.dataFilesBox.currentIndex()
-        try:
-            if self.filePaths[index].endswith('-epo.fif'):
-                from mne import read_epochs
-                self.type = 'epochs'
-                self.data = read_epochs(self.filePaths[index])
-                print('Epoch file initialized')
-            else:
-                from mne.io import read_raw_fif
-                self.type = 'raw'
-                self.data = read_raw_fif(self.filePaths[index])
-                print('Raw file initialized')
-        except Exception as e:
-            print(e)
-            print('Cannot read the file')
+        if self.filePaths[index].endswith('-epo.fif'):
+            from mne import read_epochs
+            self.type = 'epochs'
+            self.data = read_epochs(self.filePaths[index])
+            print('Epoch file initialized')
+        elif self.filePaths[index].endswith('.fif'):
+            from mne.io import read_raw_fif
+            self.type = 'raw'
+            self.data = read_raw_fif(self.filePaths[index])
+            print('Raw file initialized')
+        else:
+            raise TypeError("Type not handled")
 
     # ---------------------------------------------------------------------
     def set_data_box(self):
@@ -128,11 +121,13 @@ class TimeFreq(QMainWindow):
         """Re-initialize the data when the value in the box is changed
         """
         from backend.util import eeg_to_montage
-
-        self.read_data()
-        self.set_informations()
-        self.montage = eeg_to_montage(self.data)
-        self.selected_ch = [name for name in self.data.info['ch_names']]
+        try:
+            self.read_data()
+            self.set_informations()
+            self.montage = eeg_to_montage(self.data)
+            self.selected_ch = [name for name in self.data.info['ch_names']]
+        except TypeError:
+            print("File not handled")
 
     # ---------------------------------------------------------------------
     def plot_data(self):
