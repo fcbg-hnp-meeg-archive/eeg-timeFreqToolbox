@@ -21,7 +21,8 @@ class Ui_RawPSDWindow(object):
         Dialog.setAutoFillBackground(True)
         Dialog.setStyleSheet("b")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(Dialog)
-        self.verticalLayout_3.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
+        self.verticalLayout_3.setSizeConstraint(
+            QtWidgets.QLayout.SetMinAndMaxSize)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.figureLayout = QtWidgets.QVBoxLayout()
@@ -29,7 +30,8 @@ class Ui_RawPSDWindow(object):
         self.figureLayout.setObjectName("figureLayout")
         self.verticalLayout_3.addLayout(self.figureLayout)
         self.lowerWindowLayout = QtWidgets.QVBoxLayout()
-        self.lowerWindowLayout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        self.lowerWindowLayout.setSizeConstraint(
+            QtWidgets.QLayout.SetFixedSize)
         self.lowerWindowLayout.setContentsMargins(300, 20, 300, -1)
         self.lowerWindowLayout.setSpacing(6)
         self.lowerWindowLayout.setObjectName("lowerWindowLayout")
@@ -38,7 +40,8 @@ class Ui_RawPSDWindow(object):
         self.frame.setLineWidth(3)
         self.frame.setObjectName("frame")
         self.ParametersLayout = QtWidgets.QHBoxLayout(self.frame)
-        self.ParametersLayout.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
+        self.ParametersLayout.setSizeConstraint(
+            QtWidgets.QLayout.SetMinAndMaxSize)
         self.ParametersLayout.setSpacing(6)
         self.ParametersLayout.setObjectName("ParametersLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -48,10 +51,12 @@ class Ui_RawPSDWindow(object):
         self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.selectPlotLabel = QtWidgets.QLabel(self.frame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(160)
         sizePolicy.setVerticalStretch(25)
-        sizePolicy.setHeightForWidth(self.selectPlotLabel.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.selectPlotLabel.sizePolicy().hasHeightForWidth())
         self.selectPlotLabel.setSizePolicy(sizePolicy)
         self.selectPlotLabel.setMinimumSize(QtCore.QSize(300, 25))
         self.selectPlotLabel.setMaximumSize(QtCore.QSize(300, 25))
@@ -66,14 +71,17 @@ class Ui_RawPSDWindow(object):
         self.horizontalLayout.setStretch(1, 1)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
+        self.horizontalLayout_2.setSizeConstraint(
+            QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout_2.setSpacing(10)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.frequencyLabel = QtWidgets.QLabel(self.frame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(160)
         sizePolicy.setVerticalStretch(25)
-        sizePolicy.setHeightForWidth(self.frequencyLabel.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.frequencyLabel.sizePolicy().hasHeightForWidth())
         self.frequencyLabel.setSizePolicy(sizePolicy)
         self.frequencyLabel.setMinimumSize(QtCore.QSize(300, 25))
         self.frequencyLabel.setMaximumSize(QtCore.QSize(300, 25))
@@ -97,7 +105,9 @@ class Ui_RawPSDWindow(object):
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setSpacing(10)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        spacerItem = QtWidgets.QSpacerItem(310, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(310, 20,
+                                           QtWidgets.QSizePolicy.Fixed,
+                                           QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem)
         self.frequencySlider = QtWidgets.QSlider(self.frame)
         self.frequencySlider.setOrientation(QtCore.Qt.Horizontal)
@@ -108,10 +118,12 @@ class Ui_RawPSDWindow(object):
         self.horizontalLayout_3.setSpacing(10)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.vmaxLabel = QtWidgets.QLabel(self.frame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(160)
         sizePolicy.setVerticalStretch(25)
-        sizePolicy.setHeightForWidth(self.vmaxLabel.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.vmaxLabel.sizePolicy().hasHeightForWidth())
         self.vmaxLabel.setSizePolicy(sizePolicy)
         self.vmaxLabel.setMinimumSize(QtCore.QSize(300, 25))
         self.vmaxLabel.setMaximumSize(QtCore.QSize(300, 25))
@@ -127,15 +139,20 @@ class Ui_RawPSDWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout_3)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
-        spacerItem1 = QtWidgets.QSpacerItem(310, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(310, 20,
+                                            QtWidgets.QSizePolicy.Fixed,
+                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem1)
         self.displayLog = QtWidgets.QCheckBox(self.frame)
         self.displayLog.setMinimumSize(QtCore.QSize(300, 25))
         self.displayLog.setMaximumSize(QtCore.QSize(300, 25))
         self.displayLog.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.displayLog.setObjectName("displayLog")
-        self.horizontalLayout_6.addWidget(self.displayLog, 0, QtCore.Qt.AlignLeft)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_6.addWidget(self.displayLog, 0,
+                                          QtCore.Qt.AlignLeft)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20,
+                                            QtWidgets.QSizePolicy.Expanding,
+                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem2)
         self.verticalLayout.addLayout(self.horizontalLayout_6)
         self.verticalLayout.setStretch(1, 1)
@@ -159,7 +176,9 @@ class Ui_RawPSDWindow(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Raw data PSD Visualizer"))
-        self.selectPlotLabel.setText(_translate("Dialog", "Select Plot Type  "))
-        self.frequencyLabel.setText(_translate("Dialog", "Frequency Range Display (min - max)"))
+        self.selectPlotLabel.setText(_translate(
+            "Dialog", "Select Plot Type  "))
+        self.frequencyLabel.setText(_translate(
+            "Dialog", "Frequency Range Display (min - max)"))
         self.vmaxLabel.setText(_translate("Dialog", "Scaling "))
         self.displayLog.setText(_translate("Dialog", "Log Scale"))

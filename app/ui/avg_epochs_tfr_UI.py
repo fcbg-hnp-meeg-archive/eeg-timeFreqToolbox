@@ -98,6 +98,7 @@ class Ui_AvgTFRWindow(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Epochs Time-Frequency Visualizer"))
+        Dialog.setWindowTitle(_translate("Dialog",
+                                         "Epochs Time-Frequency Visualizer"))
         self.Display.setText(_translate("Dialog", "Display"))
         self.label.setText(_translate("Dialog", "Scaling"))

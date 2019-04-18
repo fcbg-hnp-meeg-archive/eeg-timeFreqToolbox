@@ -20,7 +20,10 @@ class Ui_TimeFreq(object):
         font.setWeight(50)
         MenuWindow.setFont(font)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../Time-Frequency-Module/media/main.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap("../Time-Frequency-Module/media/main.png"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off)
         MenuWindow.setWindowIcon(icon)
         MenuWindow.setAutoFillBackground(False)
         MenuWindow.setStyleSheet("")
@@ -82,10 +85,12 @@ class Ui_TimeFreq(object):
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
         self.plotButton = QtWidgets.QPushButton(self.verticalGroupBox)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(130)
         sizePolicy.setVerticalStretch(25)
-        sizePolicy.setHeightForWidth(self.plotButton.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.plotButton.sizePolicy().hasHeightForWidth())
         self.plotButton.setSizePolicy(sizePolicy)
         self.plotButton.setMinimumSize(QtCore.QSize(50, 25))
         self.plotButton.setMaximumSize(QtCore.QSize(5614651, 25))
@@ -127,7 +132,8 @@ class Ui_TimeFreq(object):
         self.tabLayout1.setSpacing(6)
         self.tabLayout1.setObjectName("tabLayout1")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
+        self.horizontalLayout.setSizeConstraint(
+            QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.methodLabel = QtWidgets.QLabel(self.verticalWidget)
@@ -162,7 +168,9 @@ class Ui_TimeFreq(object):
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout_2.addWidget(self.label_2)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.tabLayout1.addLayout(self.horizontalLayout_2)
         self.psdParametersText = QtWidgets.QTextEdit(self.verticalWidget)
@@ -230,7 +238,9 @@ class Ui_TimeFreq(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.horizontalLayout_4.addWidget(self.label)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout_4)
         self.tfrParametersText = QtWidgets.QTextEdit(self.tfrTab)
@@ -261,7 +271,8 @@ class Ui_TimeFreq(object):
         self.actionAbout_Parameters = QtWidgets.QAction(MenuWindow)
         self.actionAbout_Parameters.setObjectName("actionAbout_Parameters")
         self.actionConvert_Raw_to_Epochs = QtWidgets.QAction(MenuWindow)
-        self.actionConvert_Raw_to_Epochs.setObjectName("actionConvert_Raw_to_Epochs")
+        self.actionConvert_Raw_to_Epochs.setObjectName(
+            "actionConvert_Raw_to_Epochs")
         self.actionICA_Toolbox = QtWidgets.QAction(MenuWindow)
         self.actionICA_Toolbox.setObjectName("actionICA_Toolbox")
         self.actionContact_us = QtWidgets.QAction(MenuWindow)
@@ -279,7 +290,8 @@ class Ui_TimeFreq(object):
 
     def retranslateUi(self, MenuWindow):
         _translate = QtCore.QCoreApplication.translate
-        MenuWindow.setWindowTitle(_translate("MenuWindow", "PSD Frequency Visualizer"))
+        MenuWindow.setWindowTitle(_translate("MenuWindow",
+                                             "PSD Frequency Visualizer"))
         self.verticalGroupBox.setTitle(_translate("MenuWindow", "Data"))
         self.pathButton.setText(_translate("MenuWindow", "Path"))
         self.groupBox.setTitle(_translate("MenuWindow", "Informations"))
@@ -287,18 +299,28 @@ class Ui_TimeFreq(object):
         self.channelButton.setText(_translate("MenuWindow", "Select Channels"))
         self.methodLabel.setText(_translate("MenuWindow", "Method"))
         self.label_2.setText(_translate("MenuWindow", "Parameters"))
-        self.psdButton.setText(_translate("MenuWindow", "Open Interactive PSD"))
+        self.psdButton.setText(_translate("MenuWindow",
+                                          "Open Interactive PSD"))
         self.savePsdButton.setText(_translate("MenuWindow", "Save PSD"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.psdTab), _translate("MenuWindow", "Power Spectrum Density "))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.psdTab),
+            _translate("MenuWindow", "Power Spectrum Density "))
         self.methodLabel_3.setText(_translate("MenuWindow", "Method"))
         self.label.setText(_translate("MenuWindow", "Parameters"))
-        self.tfrButton.setText(_translate("MenuWindow", "Open Interactive TFR Window"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tfrTab), _translate("MenuWindow", "Time-Frequency"))
+        self.tfrButton.setText(_translate("MenuWindow",
+                                          "Open Interactive TFR Window"))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.tfrTab),
+            _translate("MenuWindow", "Time-Frequency"))
         self.actionHow_To.setText(_translate("MenuWindow", "How To Use ? "))
-        self.actionAbout_Parameters.setText(_translate("MenuWindow", "About Parameters"))
-        self.actionConvert_Raw_to_Epochs.setText(_translate("MenuWindow", "Raw to Epochs Converter"))
+        self.actionAbout_Parameters.setText(_translate("MenuWindow",
+                                                       "About Parameters"))
+        self.actionConvert_Raw_to_Epochs.setText(_translate(
+            "MenuWindow", "Raw to Epochs Converter"))
         self.actionICA_Toolbox.setText(_translate("MenuWindow", "ICA Toolbox"))
         self.actionContact_us.setText(_translate("MenuWindow", "Contact us !"))
-        self.actionCampus_Biotech.setText(_translate("MenuWindow", "About Fondation Campus Biotech Geneva"))
-        self.actionAbout_the_project.setText(_translate("MenuWindow", "About the Human Neuroscience Platform"))
+        self.actionCampus_Biotech.setText(_translate(
+            "MenuWindow", "About Fondation Campus Biotech Geneva"))
+        self.actionAbout_the_project.setText(_translate(
+            "MenuWindow", "About the Human Neuroscience Platform"))
         self.actionContribute.setText(_translate("MenuWindow", "Contribute"))
