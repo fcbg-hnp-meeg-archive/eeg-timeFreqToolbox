@@ -1,3 +1,8 @@
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+import matplotlib.pyplot as plt
+
 #---------------------------------------------------------------------
 def _plot_time_freq(self) :
     """Plot the time-frequency representation

@@ -1,25 +1,26 @@
+from app.error import show_error
 #---------------------------------------------------------------------
 # Miscellaneous functions for reading, saving and initializing parameters
 #---------------------------------------------------------------------
 def _init_psd_parameters(self) :
     """Set the parameters in the parameters text slot"""
-    text = "fmin=0\nfmax=100\ntmin=Default\ntmax=Default\n"
+    text = 'fmin=0\nfmax=100\ntmin=Default\ntmax=Default\n'
     if self.ui.psdMethod.currentText() == 'welch' :
-        text = text + "n_fft=Default\nn_per_seg=Default\nn_overlap=0"
+        text = text + 'n_fft=Default\nn_per_seg=Default\nn_overlap=0'
     if self.ui.psdMethod.currentText() == 'multitaper' :
-        text = text + "bandwidth=4"
+        text = text + 'bandwidth=4'
     self.ui.psdParametersText.setText(text)
 
 #---------------------------------------------------------------------
 def _init_tfr_parameters(self) :
     """Set the parameters in the parameters text slot"""
-    text = "fmin=5\nfmax=100"
+    text = 'fmin=5\nfmax=100'
     if self.ui.tfrMethodBox.currentText() == 'multitaper' :
-        text = text + "\nfreq_step=1\ntime_window=0.5\ntime_bandwidth=4"
+        text = text + '\nfreq_step=1\ntime_window=0.5\ntime_bandwidth=4'
     if self.ui.tfrMethodBox.currentText() == 'morlet' :
-        text = text + "\nfreq_step=1\ntime_window=0.5"
+        text = text + '\nfreq_step=1\ntime_window=0.5'
     if self.ui.tfrMethodBox.currentText() == 'stockwell' :
-        text = text + "\nwidth=1\nn_fft=Default"
+        text = text + '\nwidth=1\nn_fft=Default'
     self.ui.tfrParametersText.setText(text)
 
 #---------------------------------------------------------------------
@@ -63,19 +64,19 @@ def _read_parameters(self, tfr = False) :
         text = self.ui.tfrParametersText.toPlainText()
     else :
         text = self.ui.psdParametersText.toPlainText()
-    params = text.replace(" ", "").split('\n')
+    params = text.replace(' ', '').split('\n')
     dic = {}
     try :
         for param in params :
-            param, val = param.replace(" ", "").split("=")
+            param, val = param.replace(' ', '').split('=')
             if val == 'Default' or val == 'None' :
                 dic[param] = None
             else :
                     dic[param] = val
 
     except ValueError :
-            self.show_error("Format of parameters must be "
-                            + "param_id = values")
+        show_error('Format of parameters must be '
+                  + 'param_id = values')
     self.params = dic
 
 #---------------------------------------------------------------------
@@ -223,14 +224,14 @@ def _init_avg_tfr(self) :
             picks          = picks)
 
     except ValueError :
-        print("Time-Window or n_cycles is too high for"
-              + "the length of the signal :(\n"
-              + "Please use a smaller Time-Window"
-              + " or less cycles.")
+        print('Time-Window or n_cycles is too high for'
+              + 'the length of the signal :(\n'
+              + 'Please use a smaller Time-Window'
+              + ' or less cycles.')
 
     except AttributeError :
-        print("Please initialize the EEG data before"
-              + " proceeding.")
+        print('Please initialize the EEG data before'
+              + ' proceeding.')
 
 #---------------------------------------------------------------------
 def _init_ncycles(self, freqs) :
@@ -239,14 +240,14 @@ def _init_ncycles(self, freqs) :
 
     # Handling of the time window parameter for multitaper and morlet method
     n_cycles = 0
-    if self.ui.tfrMethodBox.currentText() != "stockwell" :
+    if self.ui.tfrMethodBox.currentText() != 'stockwell' :
         n_cycles = float_(self.params.get('n_cycles', None))
         if n_cycles is None :
             time_window = float_(self.params.get('time_window', None))
             if time_window is None :
-                self.show_error('Please specify a number of cycles,'
+                show_error('Please specify a number of cycles,'
                                 + ' or a time_window parameter')
-                raise ValueError("Not enough parameters found")
+                raise ValueError('Not enough parameters found')
             else :
                 n_cycles = freqs * time_window
     return n_cycles

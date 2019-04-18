@@ -27,7 +27,8 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def setup_boxes(self) :
-        """Setup the boxes with names"""
+        """Setup the boxes with names
+        """
         self.ui.psdMethod.addItem('welch')
         self.ui.psdMethod.addItem('multitaper')
         self.ui.tfrMethodBox.addItem('multitaper')
@@ -36,7 +37,8 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def set_bindings(self) :
-        """Set the bindings"""
+        """Set the bindings
+        """
         (self.ui.pathButton.clicked
         .connect(self.choose_data_path))
 
@@ -67,7 +69,8 @@ class TimeFreq(QMainWindow):
     # Data path and Data handling functions
     #========================================================================
     def choose_data_path(self) :
-        """Open window for choosing data path and updates the line"""
+        """Open window for choosing data path and updates the line
+        """
         try :
             from os.path import dirname
             self.filePaths, _ = QFileDialog.getOpenFileNames(
@@ -90,7 +93,8 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def read_data(self) :
-        """Reads the data from path"""
+        """Reads the data from path
+        """
         index = self.ui.dataFilesBox.currentIndex()
         try :
             if self.filePaths[index].endswith('-epo.fif') :
@@ -108,7 +112,8 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def set_data_box(self) :
-        """Initialize the combo box with the names"""
+        """Initialize the combo box with the names
+        """
         from os.path import basename
 
         self.ui.dataFilesBox.clear()
@@ -117,7 +122,8 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def data_box_changed(self) :
-        """Re-initialize the data when the value in the box is changed"""
+        """Re-initialize the data when the value in the box is changed
+        """
         from backend.util import eeg_to_montage
 
         self.read_data()
@@ -127,7 +133,8 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def plot_data(self) :
-        """Plot the data"""
+        """Plot the data
+        """
         from matplotlib.pyplot import close, show
         try :
             close('all')
@@ -138,14 +145,16 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def set_informations(self) :
-        """Set informations in the information label"""
+        """Set informations in the information label
+        """
         from backend.util import init_info_string
         self.ui.infoLabel.setText(init_info_string(self.data))
 
     # Parameters initialization
     #========================================================================
     def init_parameters(self) :
-        """Init the parameters in the text editor"""
+        """Init the parameters in the text editor
+        """
         from backend.time_freq import \
             _init_psd_parameters, _init_tfr_parameters
 
@@ -155,7 +164,8 @@ class TimeFreq(QMainWindow):
     # Channel picking functions
     #========================================================================
     def open_channel_picker(self) :
-        """Open the channel picker"""
+        """Open the channel picker
+        """
         from app.select_channels import PickChannels
         channels = self.data.info['ch_names']
         picker = PickChannels(self, channels, self.selected_ch)
@@ -163,13 +173,15 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def set_selected_ch(self, selected) :
-        """Set selected channels"""
+        """Set selected channels
+        """
         self.selected_ch = selected
 
     # Open PSD Visualizer
     #========================================================================
     def open_psd_visualizer(self) :
-        """Redirect to PSD Visualize app"""
+        """Redirect to PSD Visualize app
+        """
         try :
             from backend.time_freq import _read_parameters
             _read_parameters(self)
@@ -191,7 +203,8 @@ class TimeFreq(QMainWindow):
     # Open TFR Visualizer
     #========================================================================
     def open_tfr_visualizer(self) :
-        """Open TFR Visualizer for epochs"""
+        """Open TFR Visualizer for epochs
+        """
         try :
             from backend.time_freq import _read_parameters
             _read_parameters(self, True)
@@ -206,7 +219,8 @@ class TimeFreq(QMainWindow):
     # Saving
     #========================================================================
     def choose_save_path(self) :
-        """Open window for choosing save path"""
+        """Open window for choosing save path
+        """
         if len(self.filePaths) == 1 :
             self.savepath, _ = QFileDialog.getSaveFileName(self)
         else :
@@ -222,7 +236,8 @@ class TimeFreq(QMainWindow):
 
     #---------------------------------------------------------------------
     def save_matrix(self) :
-        """Save the matrix containing the PSD"""
+        """Save the matrix containing the PSD
+        """
 
         from backend.time_freq import _save_matrix
         _save_matrix(self)

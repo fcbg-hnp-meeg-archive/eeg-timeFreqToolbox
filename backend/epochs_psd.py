@@ -153,17 +153,17 @@ class EpochsPSD :
     def __str__(self) :
         """Return informations about the instance"""
 
-        string = ("PSD Computed on {} Epochs with method {}.\nParameters : \n"
-                 + "fmin:{}Hz, fmax:{}Hz (with {} frequency points)\n"
-                 + "tmin : {}s, tmax : {}s\n")
+        string = ('PSD Computed on {} Epochs with method {}.\nParameters : \n'
+                 + 'fmin:{}Hz, fmax:{}Hz (with {} frequency points)\n'
+                 + 'tmin : {}s, tmax : {}s\n')
         string.format(len(self.info['chs']), self.method,
                       self.fmin, self.fmax, len(self.freqs),
                       self.tmin, self.tmax)
         if self.method == 'welch' :
-            string = (string + "n_fft:{}, n_per_seg:{}, n_overlap:{}\n")
+            string = (string + 'n_fft:{}, n_per_seg:{}, n_overlap:{}\n')
             string.format(self.n_fft, self.n_per_seg, self.n_overlap)
         else :
-            string = string + "bandwidth:{}".format(self.bandwidth)
+            string = string + 'bandwidth:{}'.format(self.bandwidth)
         return string
 
     #------------------------------------------------------------------------
@@ -171,11 +171,11 @@ class EpochsPSD :
         """Returns a quick recap"""
 
         if self.method == 'welch' :
-            string = ("Computed with Welch method, "
-                     + "n_fft : {}, n_per_seg : {}, n_overlap : {}\n")
+            string = ('Computed with Welch method, '
+                     + 'n_fft : {}, n_per_seg : {}, n_overlap : {}\n')
             string.format(self.n_fft, self.n_per_seg, self.n_overlap)
         else :
-            string = "Computed with Multitaper method, bandwidth : {}"
+            string = 'Computed with Multitaper method, bandwidth : {}'
             string.format(self.bandwidth)
         return string
 
