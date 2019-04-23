@@ -138,7 +138,8 @@ class TimeFreq(QMainWindow):
             self.data.plot(block=True, scalings='auto')
             show()
         except AttributeError:
-            print('No data initialized')
+            print('Please initialize the EEG data '
+                  + 'before proceeding.')
 
     # ---------------------------------------------------------------------
     def set_informations(self):
@@ -164,9 +165,13 @@ class TimeFreq(QMainWindow):
         """Open the channel picker
         """
         from app.select_channels import PickChannels
-        channels = self.data.info['ch_names']
-        picker = PickChannels(self, channels, self.selected_ch)
-        picker.exec_()
+        try:
+            channels = self.data.info['ch_names']
+            picker = PickChannels(self, channels, self.selected_ch)
+            picker.exec_()
+        except AttributeError:
+            print('Please initialize the EEG data '
+                  + 'before proceeding.')
 
     # ---------------------------------------------------------------------
     def set_selected_ch(self, selected):
