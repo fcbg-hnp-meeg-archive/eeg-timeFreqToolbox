@@ -31,9 +31,9 @@ class TimeFreq(QMainWindow):
         """Setup the boxes with names"""
         self.ui.psdMethod.addItem('welch')
         self.ui.psdMethod.addItem('multitaper')
+        self.ui.tfrMethodBox.addItem('stockwell')
         self.ui.tfrMethodBox.addItem('morlet')
         self.ui.tfrMethodBox.addItem('multitaper')
-        self.ui.tfrMethodBox.addItem('stockwell')
 
     # ---------------------------------------------------------------------
     def set_bindings(self):
