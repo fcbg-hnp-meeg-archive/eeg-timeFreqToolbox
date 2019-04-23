@@ -321,6 +321,3 @@ class RawPSD:
         data = np.reshape(data, n_channels * num_freq_frames, order='F')
         data.tofile(f)
         f.close()
-
-    def get_pos(self):
-        return self.pos
