@@ -11,7 +11,7 @@ def _plot_time_freq(self):
     self.ui.figure.clear()
     ax = self.ui.figure.add_subplot(1, 1, 1)
     self.cbar_image = self.avg.plot_time_freq(
-        self.index, ax, vmax=self.vmax)
+        self.index, ax, vmin=self.vmin, vmax=self.vmax, log_display=self.log)
     ax.set_title('Time-Frequency Plot - Channel {}'.format(
                  self.avg.info['ch_names'][self.avg.picks[self.index]]),
                  fontsize=15, fontweight='light')
@@ -30,7 +30,7 @@ def _plot_freq_ch(self):
     self.ui.figure.clear()
     ax = self.ui.figure.add_subplot(1, 1, 1)
     self.cbar_image = self.avg.plot_freq_ch(
-        self.index, ax, vmax=self.vmax)
+        self.index, ax, vmin=self.vmin, vmax=self.vmax, log_display=self.log)
     ax.set_title(('Frequency-Channel Plot - Time {:.2f}s'
                  .format(self.avg.tfr.times[self.index])),
                  fontsize=15, fontweight='light')
@@ -51,7 +51,7 @@ def _plot_time_ch(self):
     self.ui.figure.clear()
     ax = self.ui.figure.add_subplot(1, 1, 1)
     self.cbar_image = self.avg.plot_time_ch(
-        self.index, ax, vmax=self.vmax)
+        self.index, ax, vmin=self.vmin, vmax=self.vmax, log_display=self.log)
     ax.set_title(('Time-Channel Plot - Frequency {:.2f}'
                   .format(self.avg.tfr.freqs[self.index])),
                  fontsize=15, fontweight='light')

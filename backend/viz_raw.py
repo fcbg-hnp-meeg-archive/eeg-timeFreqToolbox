@@ -67,7 +67,10 @@ def _plot_all_psd(win):
     ax.set_xlim([win.psd.freqs[win.f_index_min],
                  win.psd.freqs[win.f_index_max]])
     ax.set_xlabel('Frequency (Hz)')
-    ax.set_ylabel('Power (µV²/Hz)')
+    if win.log:
+        ax.set_ylabel('Power (dB)')
+    else:
+        ax.set_ylabel('Power (µV²/Hz)')
     win.ui.figure.subplots_adjust(top=0.85, right=0.9,
                                   left=0.1, bottom=0.1)
     win.ui.canvas.draw()
@@ -81,20 +84,10 @@ def _add_colorbar(win, position):
     cbar = plt.colorbar(win.cbar_image, cax=cax)
     cbar.ax.get_xaxis().labelpad = 15
     if win.log:
-        label = 'PSD (dB)'
+        label = 'Power (dB)'
     else:
-        label = 'PSD (µV²/Hz)'
+        label = 'Power (µV²/Hz)'
     cbar.ax.set_xlabel(label)
-
-
-# ---------------------------------------------------------------------
-def set_ax_single_psd(win, ax):
-    """Set axes values for a single PSD plot
-    """
-    ax.set_xlim([win.psd.freqs[0],
-                 win.psd.freqs[-1]])
-    ax.set_xlabel('Frequency (Hz)')
-    ax.set_ylabel('Power (µV²/Hz)')
 
 
 # ---------------------------------------------------------------------
@@ -109,7 +102,13 @@ def _plot_single_psd(win, channel_picked):
     index_ch = win.psd.picks[channel_picked - 1]
     ax.set_title('PSD of channel {}'
                  .format(win.psd.info['ch_names'][index_ch]))
-    set_ax_single_psd(win, ax)
+    ax.set_xlim([win.psd.freqs[0],
+                 win.psd.freqs[-1]])
+    ax.set_xlabel('Frequency (Hz)')
+    if win.log:
+        ax.set_ylabel('Power (dB)')
+    else:
+        ax.set_ylabel('Power (µV²/Hz)')
     win = fig.canvas.manager.window
     win.setWindowModality(Qt.WindowModal)
     win.setWindowTitle("PSD")

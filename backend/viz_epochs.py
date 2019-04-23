@@ -228,4 +228,7 @@ def _set_ax_single_psd(win, ax):
     ax.set_xlim([win.psd.freqs[0],
                  win.psd.freqs[-1]])
     ax.set_xlabel('Frequency (Hz)')
-    ax.set_ylabel('Power (µV²/Hz)')
+    if win.log:
+        ax.set_ylabel('Power (dB)')
+    else:
+        ax.set_ylabel('Power (µV²/Hz)')

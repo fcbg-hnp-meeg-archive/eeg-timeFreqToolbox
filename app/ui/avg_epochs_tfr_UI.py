@@ -2,12 +2,11 @@
 
 # Form implementation generated from reading ui file 'avg_epochs_tfr.ui'
 #
-# Created by: PyQt5 UI code generator 5.12
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_AvgTFRWindow(object):
     def setupUi(self, Dialog):
@@ -42,14 +41,15 @@ class Ui_AvgTFRWindow(object):
         self.Display.setObjectName("Display")
         self.horizontalLayout_3.addWidget(self.Display)
         self.displayBox = QtWidgets.QComboBox(self.frame)
-        self.displayBox.setMinimumSize(QtCore.QSize(300, 25))
-        self.displayBox.setMaximumSize(QtCore.QSize(300, 25))
+        self.displayBox.setMinimumSize(QtCore.QSize(0, 25))
+        self.displayBox.setMaximumSize(QtCore.QSize(16777215, 25))
         self.displayBox.setObjectName("displayBox")
         self.horizontalLayout_3.addWidget(self.displayBox)
         self.horizontalLayout_3.setStretch(0, 1)
         self.horizontalLayout_3.setStretch(1, 2)
         self.bottomLayout.addLayout(self.horizontalLayout_3)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setContentsMargins(0, -1, 0, -1)
         self.horizontalLayout_2.setSpacing(10)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.label = QtWidgets.QLabel(self.frame)
@@ -59,11 +59,23 @@ class Ui_AvgTFRWindow(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.horizontalLayout_2.addWidget(self.label)
-        self.lineEdit = QtWidgets.QLineEdit(self.frame)
-        self.lineEdit.setMinimumSize(QtCore.QSize(300, 0))
-        self.lineEdit.setMaximumSize(QtCore.QSize(300, 16777215))
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout_2.addWidget(self.lineEdit)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setSpacing(10)
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.vmin = QtWidgets.QLineEdit(self.frame)
+        self.vmin.setObjectName("vmin")
+        self.horizontalLayout_5.addWidget(self.vmin)
+        self.vmax = QtWidgets.QLineEdit(self.frame)
+        self.vmax.setMinimumSize(QtCore.QSize(0, 0))
+        self.vmax.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.vmax.setObjectName("vmax")
+        self.horizontalLayout_5.addWidget(self.vmax)
+        self.log = QtWidgets.QCheckBox(self.frame)
+        self.log.setObjectName("log")
+        self.horizontalLayout_5.addWidget(self.log)
+        self.horizontalLayout_2.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_2.setStretch(0, 1)
+        self.horizontalLayout_2.setStretch(1, 2)
         self.bottomLayout.addLayout(self.horizontalLayout_2)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setSpacing(10)
@@ -77,8 +89,8 @@ class Ui_AvgTFRWindow(object):
         self.mainLabel.setObjectName("mainLabel")
         self.horizontalLayout.addWidget(self.mainLabel)
         self.mainSlider = QtWidgets.QSlider(self.frame)
-        self.mainSlider.setMinimumSize(QtCore.QSize(300, 25))
-        self.mainSlider.setMaximumSize(QtCore.QSize(300, 25))
+        self.mainSlider.setMinimumSize(QtCore.QSize(0, 25))
+        self.mainSlider.setMaximumSize(QtCore.QSize(16777215, 25))
         self.mainSlider.setOrientation(QtCore.Qt.Horizontal)
         self.mainSlider.setObjectName("mainSlider")
         self.horizontalLayout.addWidget(self.mainSlider)
@@ -98,7 +110,7 @@ class Ui_AvgTFRWindow(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog",
-                                         "Epochs Time-Frequency Visualizer"))
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.Display.setText(_translate("Dialog", "Display"))
         self.label.setText(_translate("Dialog", "Scaling"))
+        self.log.setText(_translate("Dialog", "log"))

@@ -25,10 +25,11 @@ class AvgTFRWindow(QDialog):
     def setup(self):
         self.set_canvas()
         self.set_box()
-        self.set_line_edit()
         self.set_bindings()
         self.set_slider()
-        self.plot_changed()
+        self.value_changed()
+        self.ui.vmax.setMaxLength(6)
+        self.ui.vmin.setMaxLength(6)
 
     # ---------------------------------------------------------------------
     def set_canvas(self):
@@ -42,14 +43,6 @@ class AvgTFRWindow(QDialog):
         self.ui.toolbar = NavigationToolbar(self.ui.canvas, self)
         self.ui.matplotlibLayout.addWidget(self.ui.toolbar)
         self.ui.matplotlibLayout.addWidget(self.ui.canvas)
-
-    # ---------------------------------------------------------------------
-    def set_line_edit(self):
-        """Sets up scaling line edit
-        """
-        self.vmax = None
-        self.ui.lineEdit.setText('0')
-        self.ui.lineEdit.setMaxLength(6)
 
     # ---------------------------------------------------------------------
     def set_box(self):
@@ -72,39 +65,36 @@ class AvgTFRWindow(QDialog):
     def set_bindings(self):
         """Set the bindings
         """
-        self.ui.lineEdit.editingFinished.connect(self.scaling_changed)
-        self.ui.displayBox.currentIndexChanged.connect(self.plot_changed)
-        self.ui.mainSlider.valueChanged.connect(self.index_changed)
+        self.ui.vmin.editingFinished.connect(self.value_changed)
+        self.ui.vmax.editingFinished.connect(self.value_changed)
+        self.ui.displayBox.currentIndexChanged.connect(self.update_slider)
+        self.ui.mainSlider.valueChanged.connect(self.value_changed)
+        self.ui.log.stateChanged.connect(self.value_changed)
 
     # Updating functions
     # =====================================================================
-    def plot_changed(self):
-        """Get called when the method is changed
-        """
-        self.plotType = self.ui.displayBox.currentText()
-        self.update_slider()
-        self.plot()
-
-    # ---------------------------------------------------------------------
-    def index_changed(self):
-        """Gets called when the index is changed
-        """
-        self.index = self.ui.mainSlider.value()
-        self.plot()
-
-    # --------------------------------------------------------------------
-    def scaling_changed(self):
+    def value_changed(self):
         """Gets called when scaling is changed
         """
-        self.vmax = float(self.ui.lineEdit.text())
-        if self.vmax == 0:
+        self.index = self.ui.mainSlider.value()
+        self.log = self.ui.log.checkState()
+        self.vmin = self.ui.vmin.text()
+        self.vmax = self.ui.vmax.text()
+        try:
+            self.vmax = float(self.vmax)
+        except ValueError:
             self.vmax = None
+        try:
+            self.vmin = float(self.vmin)
+        except ValueError:
+            self.vmin = None
         self.plot()
 
     # ---------------------------------------------------------------------
     def update_slider(self):
         """Update Maximum of the slider
         """
+        self.plotType = self.ui.displayBox.currentText()
         self.ui.mainSlider.setValue(0)
         if self.plotType == 'Time-Frequency plot':
             self.ui.mainSlider.setMaximum(self.avg.tfr.data.shape[0] - 1)
@@ -116,7 +106,7 @@ class AvgTFRWindow(QDialog):
             self.ui.mainSlider.setMaximum(self.avg.tfr.data.shape[1] - 1)
             self.ui.mainLabel.setText('Frequencies')
         self.ui.mainSlider.setTickInterval(1)
-        self.plot()
+        self.value_changed()
 
     # Plotting functions
     # =====================================================================
