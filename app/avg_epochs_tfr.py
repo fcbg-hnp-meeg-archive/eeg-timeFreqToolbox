@@ -30,6 +30,10 @@ class AvgTFRWindow(QDialog):
         self.value_changed()
         self.ui.vmax.setMaxLength(6)
         self.ui.vmin.setMaxLength(6)
+        self.ui.fmax.setMaxLength(6)
+        self.ui.fmin.setMaxLength(6)
+        self.ui.tmin.setMaxLength(6)
+        self.ui.tmax.setMaxLength(6)
 
     # ---------------------------------------------------------------------
     def set_canvas(self):
@@ -51,6 +55,7 @@ class AvgTFRWindow(QDialog):
         self.ui.displayBox.addItem('Time-Frequency plot')
         self.ui.displayBox.addItem('Channel-Frequency plot')
         self.ui.displayBox.addItem('Channel-Time plot')
+        self.ui.displayBox.addItem('Topomap plot')
         self.plotType = 'Time-Frequency plot'
 
     # ---------------------------------------------------------------------
@@ -59,6 +64,14 @@ class AvgTFRWindow(QDialog):
         """
         self.index = self.ui.mainSlider.value()
         self.ui.mainSlider.setMinimum(0)
+        self.ui.fSlider.setMaximum(len(self.avg.tfr.freqs) - 1)
+        self.ui.fSlider.setMinimum(1)
+        self.ui.fSlider.setValue(0)
+        self.ui.fSlider.setTickInterval(1)
+        self.ui.tSlider.setMaximum(len(self.avg.tfr.times) - 1)
+        self.ui.tSlider.setMinimum(1)
+        self.ui.tSlider.setValue(0)
+        self.ui.tSlider.setTickInterval(1)
         self.update_slider()
 
     # ---------------------------------------------------------------------
@@ -67,6 +80,12 @@ class AvgTFRWindow(QDialog):
         """
         self.ui.vmin.editingFinished.connect(self.value_changed)
         self.ui.vmax.editingFinished.connect(self.value_changed)
+        self.ui.tmin.editingFinished.connect(self.value_changed)
+        self.ui.tmax.editingFinished.connect(self.value_changed)
+        self.ui.fmin.editingFinished.connect(self.value_changed)
+        self.ui.fmax.editingFinished.connect(self.value_changed)
+        self.ui.fSlider.valueChanged.connect(self.slider_changed)
+        self.ui.tSlider.valueChanged.connect(self.slider_changed)
         self.ui.displayBox.currentIndexChanged.connect(self.update_slider)
         self.ui.mainSlider.valueChanged.connect(self.value_changed)
         self.ui.log.stateChanged.connect(self.value_changed)
@@ -78,17 +97,61 @@ class AvgTFRWindow(QDialog):
         """
         self.index = self.ui.mainSlider.value()
         self.log = self.ui.log.checkState()
-        self.vmin = self.ui.vmin.text()
-        self.vmax = self.ui.vmax.text()
         try:
-            self.vmax = float(self.vmax)
+            self.fmax = float(self.ui.fmax.text())
+            if self.fmax > self.avg.tfr.freqs[-1]:
+                self.fmax = self.avg.tfr.freqs[-1]
+        except ValueError:
+            self.fmax = self.avg.tfr.freqs[-1]
+
+        try:
+            self.fmin = float(self.ui.fmin.text())
+            if self.fmin < self.avg.tfr.freqs[0]:
+                self.fmin = self.avg.tfr.freqs[0]
+        except ValueError:
+            self.fmin = self.avg.tfr.freqs[0]
+
+        try:
+            self.tmax = float(self.ui.tmax.text())
+            if self.tmax > self.avg.tfr.times[-1]:
+                self.tmax = self.avg.tfr.times[-1]
+        except ValueError:
+            self.tmax = self.avg.tfr.times[-1]
+
+        try:
+            self.tmin = float(self.ui.tmin.text())
+            if self.tmin < self.avg.tfr.times[0]:
+                self.tmin = self.avg.tfr.times[0]
+        except ValueError:
+            self.tmin = self.avg.tfr.times[0]
+
+        try:
+            self.vmax = float(self.ui.vmax.text())
         except ValueError:
             self.vmax = None
+
         try:
-            self.vmin = float(self.vmin)
+            self.vmin = float(self.ui.vmin.text())
         except ValueError:
             self.vmin = None
         self.plot()
+
+    # ---------------------------------------------------------------------
+    def slider_changed(self):
+        """Change the values of frequency and time for topomap when
+        the slider is moved
+        """
+        freq_index = self.ui.fSlider.value()
+        fmin, fmax = (self.avg.tfr.freqs[freq_index - 1],
+                      self.avg.tfr.freqs[freq_index + 1])
+        self.ui.fmin.setText(str(fmin))
+        self.ui.fmax.setText(str(fmax))
+        time_index = self.ui.tSlider.value()
+        tmin, tmax = (self.avg.tfr.times[time_index - 1],
+                      self.avg.tfr.times[time_index + 1])
+        self.ui.tmin.setText(str(tmin))
+        self.ui.tmax.setText(str(tmax))
+        self.value_changed()
 
     # ---------------------------------------------------------------------
     def update_slider(self):
@@ -114,7 +177,7 @@ class AvgTFRWindow(QDialog):
         """Plot the correct representation
         """
         from backend.viz_tfr import \
-            _plot_time_freq, _plot_freq_ch, _plot_time_ch
+            _plot_time_freq, _plot_freq_ch, _plot_time_ch, _plot_topomap_tfr
 
         if self.plotType == 'Time-Frequency plot':
             _plot_time_freq(self)
@@ -122,3 +185,5 @@ class AvgTFRWindow(QDialog):
             _plot_freq_ch(self)
         if self.plotType == 'Channel-Time plot':
             _plot_time_ch(self)
+        if self.plotType == 'Topomap plot':
+            _plot_topomap_tfr(self)

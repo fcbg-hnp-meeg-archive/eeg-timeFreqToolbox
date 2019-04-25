@@ -66,10 +66,36 @@ def _plot_time_ch(self):
 
 
 # ---------------------------------------------------------------------
+def _plot_topomap_tfr(self):
+    from matplotlib.ticker import FormatStrFormatter
+
+    try:
+        self.ui.figure.clear()
+        ax = self.ui.figure.add_subplot(1, 1, 1)
+        fig = self.avg.tfr.plot_topomap(
+            tmin=self.tmin, tmax=self.tmax,
+            fmin=self.fmin, fmax=self.fmax,
+            vmin=self.vmin, vmax=self.vmax,
+            axes=ax, mode='logratio',
+            cmap=self.avg.cmap, show=False,
+            colorbar=True)
+        ax = fig.get_axes()[1]
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%6.1e'))
+        ax.tick_params(axis='both', labelsize=10)
+        ax.set_xlabel('Power', fontsize=10)
+        ax.set_position([0.915, 0.15, 0.01, 0.7])
+        ax.get_xaxis().labelpad = 15
+        self.ui.canvas.draw()
+
+    except ValueError:
+        print("Error with the parameters")
+
+
+# ---------------------------------------------------------------------
 def add_colorbar(self, position):
     """ Add colorbar to the plot at correct position
     """
     cax = self.ui.figure.add_axes(position)
-    cbar = plt.colorbar(self.cbar_image, cax=cax)
+    cbar = plt.colorbar(self.cbar_image, cax=cax, format='%6.1e')
     cbar.ax.get_xaxis().labelpad = 15
     cbar.ax.set_xlabel('Power')
