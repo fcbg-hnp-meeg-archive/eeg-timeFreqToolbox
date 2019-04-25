@@ -21,7 +21,7 @@ def _plot_topomap(win):
                              win.f_index_min, win.f_index_max, axes=ax,
                              vmin=win.vmin, vmax=win.vmax,
                              log_display=win.log)
-    _add_colorbar(win, [0.915, 0.15, 0.01, 0.7])
+    _add_colorbar(win, [0.70, 0.15, 0.02, 0.7])
     win.ui.figure.subplots_adjust(top=0.9, right=0.8,
                                   left=0.1, bottom=0.1)
     win.ui.canvas.draw()
@@ -42,7 +42,8 @@ def _plot_matrix(win):
     ax.set_xlabel('Frequencies (Hz)')
     ax.set_ylabel('Channels')
     ax.xaxis.set_ticks_position('bottom')
-    _add_colorbar(win, [0.915, 0.15, 0.01, 0.7])
+    ax.grid(False)
+    _add_colorbar(win, [0.85, 0.15, 0.02, 0.7])
     win.ui.figure.subplots_adjust(top=0.85, right=0.8,
                                   left=0.1, bottom=0.1)
     win.ui.canvas.draw()
@@ -54,7 +55,7 @@ def _plot_all_psd(win):
     """
     win.ui.figure.clear()
     ax = win.ui.figure.add_subplot(1, 1, 1)
-    win.annot = ax.annotate("", xy=(0, 0), xytext=(20, 20),
+    win.annot = ax.annotate("", xy=(0, 0), xytext=(3, 3),
                             textcoords="offset points",
                             arrowprops=dict(arrowstyle="->"))
     win.annot.set_visible(False)
@@ -112,5 +113,6 @@ def _plot_single_psd(win, channel_picked):
     win = fig.canvas.manager.window
     win.setWindowModality(Qt.WindowModal)
     win.setWindowTitle("PSD")
+    win.resize(1200, 1000)
     win.findChild(QStatusBar).hide()
     fig.show()

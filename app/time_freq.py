@@ -2,8 +2,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+import matplotlib.pyplot as plt
+
 from app.ui.time_freq_UI import Ui_TimeFreq
 
+plt.style.use('ggplot')
 
 class TimeFreq(QMainWindow):
     """Main Window for time-frequency

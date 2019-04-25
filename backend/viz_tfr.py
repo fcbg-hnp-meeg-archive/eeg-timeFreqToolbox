@@ -17,7 +17,8 @@ def _plot_time_freq(self):
                  fontsize=15, fontweight='light')
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequencies (Hz)')
-    add_colorbar(self, [0.915, 0.15, 0.01, 0.7])
+    ax.grid(False)
+    add_colorbar(self, [0.85, 0.15, 0.02, 0.7])
     self.ui.figure.subplots_adjust(top=0.85, right=0.8,
                                    left=0.1, bottom=0.1)
     self.ui.canvas.draw()
@@ -36,9 +37,8 @@ def _plot_freq_ch(self):
                  fontsize=15, fontweight='light')
     ax.set_xlabel('Frequencies (Hz)')
     ax.set_ylabel('Channels')
-    ax.set_yticks([i for i in range(1, len(self.avg.picks)+1)])
-    ax.set_yticklabels(self.avg.picks)
-    add_colorbar(self, [0.915, 0.15, 0.01, 0.7])
+    ax.grid(False)
+    add_colorbar(self, [0.85, 0.15, 0.02, 0.7])
     self.ui.figure.subplots_adjust(top=0.85, right=0.8,
                                    left=0.1, bottom=0.1)
     self.ui.canvas.draw()
@@ -57,9 +57,8 @@ def _plot_time_ch(self):
                  fontsize=15, fontweight='light')
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Channels')
-    ax.set_yticks([i for i in range(1, len(self.avg.picks)+1)])
-    ax.set_yticklabels(self.avg.picks)
-    add_colorbar(self, [0.915, 0.15, 0.01, 0.7])
+    ax.grid(False)
+    add_colorbar(self, [0.85, 0.15, 0.02, 0.7])
     self.ui.figure.subplots_adjust(top=0.85, right=0.8,
                                    left=0.1, bottom=0.1)
     self.ui.canvas.draw()
@@ -83,7 +82,6 @@ def _plot_topomap_tfr(self):
         ax.yaxis.set_major_formatter(FormatStrFormatter('%6.1e'))
         ax.tick_params(axis='both', labelsize=10)
         ax.set_xlabel('Power', fontsize=10)
-        ax.set_position([0.915, 0.15, 0.01, 0.7])
         ax.get_xaxis().labelpad = 15
         self.ui.canvas.draw()
 

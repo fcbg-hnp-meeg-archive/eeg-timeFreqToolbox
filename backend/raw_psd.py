@@ -224,9 +224,9 @@ class RawPSD:
         if log_display:
             psd = 10 * log(psd)
         if axes is not None:
-            return axes.plot(self.freqs, psd)
+            return axes.plot(self.freqs, psd, linewidth=2)
         else:
-            return plt.plot(self.freqs, psd)
+            return plt.plot(self.freqs, psd, linewidth=2)
 
     # ------------------------------------------------------------------------
     def plot_all_psd(self, freq_index_min, freq_index_max,
@@ -246,7 +246,7 @@ class RawPSD:
             label = self.info['ch_names'][self.picks[i]]
             axes.plot(self.freqs[freq_index_min: freq_index_max],
                       psds[i, :], color=c, label=label,
-                      alpha=.5, picker=2, linewidth=1)
+                      alpha=.5, picker=2, linewidth=2)
         return axes
 
     # ------------------------------------------------------------------------

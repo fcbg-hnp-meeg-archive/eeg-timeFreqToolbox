@@ -17,7 +17,7 @@ def _plot_topomaps(win):
     """
     win.ui.figure.clear()
     _topomaps_adjust(win)
-    _add_colorbar(win, [0.915, 0.15, 0.01, 0.7])
+    _add_colorbar(win, [0.85, 0.15, 0.02, 0.7])
     win.ui.figure.subplots_adjust(top=0.9, right=0.8,
                                   left=0.1, bottom=0.1)
     win.ui.canvas.draw()
@@ -29,7 +29,7 @@ def _plot_matrix(win):
     """
     win.ui.figure.clear()
     _matrix_adjust(win)
-    _add_colorbar(win, [0.915, 0.15, 0.01, 0.7])
+    _add_colorbar(win, [0.85, 0.15, 0.02, 0.7])
     win.ui.figure.subplots_adjust(top=0.85, right=0.8,
                                   left=0.1, bottom=0.1)
     win.ui.canvas.draw()
@@ -83,6 +83,7 @@ def _topomaps_adjust(win):
                                 win.f_index_min, win.f_index_max,
                                 axes=ax, vmin=win.vmin, vmax=win.vmax,
                                 log_display=win.log)
+
         ax.set_title('Epoch {}'.format(win.epoch_index + 1),
                      fontsize=15, fontweight='light')
 
@@ -93,6 +94,7 @@ def _topomaps_adjust(win):
                                 win.f_index_min, win.f_index_max, axes=ax,
                                 vmin=win.vmin, vmax=win.vmax,
                                 log_display=win.log)
+
         ax.set_title('Average', fontsize=15, fontweight='light')
 
 
@@ -120,6 +122,7 @@ def _matrix_adjust(win):
         ax.set_xlabel('Frequencies (Hz)')
         ax.set_ylabel('Channels')
         ax.xaxis.set_ticks_position('bottom')
+        ax.grid(False)
 
     # plot average data if showMean is checked
     if win.ui.showMean.checkState():
@@ -134,6 +137,7 @@ def _matrix_adjust(win):
         ax.set_xlabel('Frequencies (Hz)')
         ax.set_ylabel('Channels')
         ax.xaxis.set_ticks_position('bottom')
+        ax.grid(False)
 
 
 # ---------------------------------------------------------------------
@@ -158,7 +162,7 @@ def _plot_all_psd_adjust(win):
                      fontsize=15, fontweight='light')
         ax.set_xlabel('Frequencies (Hz)')
         ax.set_ylabel('Power')
-        win.annot_epoch = ax.annotate('', xy=(0, 0), xytext=(20, 20),
+        win.annot_epoch = ax.annotate('', xy=(0, 0), xytext=(3, 3),
                                       textcoords='offset points',
                                       arrowprops=dict(arrowstyle='->'))
         win.annot_epoch.set_visible(False)
@@ -175,7 +179,7 @@ def _plot_all_psd_adjust(win):
                      fontweight='light')
         ax.set_xlabel('Frequencies (Hz)')
         ax.set_ylabel('Power')
-        win.annot_avg = ax.annotate('', xy=(0, 0), xytext=(20, 20),
+        win.annot_avg = ax.annotate('', xy=(0, 0), xytext=(3, 3),
                                     textcoords='offset points',
                                     arrowprops=dict(arrowstyle='->'))
         win.annot_avg.set_visible(False)
@@ -198,6 +202,7 @@ def _plot_single_psd(win, epoch_picked, channel_picked):
     win = fig.canvas.manager.window
     win.setWindowModality(Qt.WindowModal)
     win.setWindowTitle('PSD')
+    win.resize(1200, 1000)
     win.findChild(QStatusBar).hide()
     fig.show()
 
@@ -219,6 +224,7 @@ def _plot_single_avg_psd(win, channel_picked):
     win = fig.canvas.manager.window
     win.setWindowModality(Qt.WindowModal)
     win.setWindowTitle('PSD')
+    win.resize(1200, 1000)
     win.findChild(QStatusBar).hide()
     fig.show()
 
