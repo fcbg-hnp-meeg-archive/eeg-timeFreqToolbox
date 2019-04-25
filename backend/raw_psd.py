@@ -59,7 +59,7 @@ class RawPSD:
         self.n_fft = kwargs.get('n_fft', 256)
         self.n_per_seg = kwargs.get('n_per_seg', self.n_fft)
         self.n_overlap = kwargs.get('n_overlap', 0)
-        self.cmap = 'inferno'
+        self.cmap = 'jet'
 
         if picks is not None:
             self.picks = picks

@@ -24,7 +24,7 @@ class AvgEpochsTFR:
         to the method
         """
         self.picks = picks
-        self.cmap = 'inferno'
+        self.cmap = 'jet'
         self.info = epochs.info
 
         if method == 'multitaper':
