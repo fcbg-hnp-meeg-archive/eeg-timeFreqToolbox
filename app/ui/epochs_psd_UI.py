@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_EpochsPSDWindow(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(1402, 835)
+        Dialog.resize(1680, 1050)
         Dialog.setMinimumSize(QtCore.QSize(400, 300))
-        Dialog.setMaximumSize(QtCore.QSize(1720, 1080))
+        Dialog.setMaximumSize(QtCore.QSize(1920, 1080))
         font = QtGui.QFont()
         font.setPointSize(10)
         Dialog.setFont(font)

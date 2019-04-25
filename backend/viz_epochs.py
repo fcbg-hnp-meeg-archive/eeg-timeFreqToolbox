@@ -153,6 +153,7 @@ def _plot_all_psd_adjust(win):
             win.epoch_index, win.f_index_min, win.f_index_max,
             axes=ax, log_display=win.log)
         ax.axis('tight')
+        ax.patch.set_alpha(0)
         ax.set_title('PSD for epoch {}'.format(win.epoch_index + 1),
                      fontsize=15, fontweight='light')
         ax.set_xlabel('Frequencies (Hz)')
@@ -169,6 +170,7 @@ def _plot_all_psd_adjust(win):
             win.f_index_min, win.f_index_max,
             axes=ax, log_display=win.log)
         ax.axis('tight')
+        ax.patch.set_alpha(0)
         ax.set_title('Average PSD', fontsize=15,
                      fontweight='light')
         ax.set_xlabel('Frequencies (Hz)')
