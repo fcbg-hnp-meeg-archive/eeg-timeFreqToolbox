@@ -7,7 +7,7 @@ class EpochsPSD:
     This class contains the PSD of a set of Epochs. It stores the data of
     the psds of each epoch. The psds are calculated with the Library mne.
 
-    Attributes:
+    Attributes
     ============
     fmin        (float)        : frequency limit
 
@@ -26,8 +26,8 @@ class EpochsPSD:
 
     freqs       (arr.)         : list containing the frequencies of the psds
 
-    Methods:
-    ============
+    Methods
+    =========
     __init__                   : Compute all the PSD of each epoch
 
     plot_topomap               : Plot the map of the power for a given
@@ -332,7 +332,7 @@ class EpochsPSD:
     def plot_all_psd(self, epoch_index, freq_index_min, freq_index_max,
                      axes=None, log_display=False):
         """
-        Plot all single PSD in
+        Plot all single PSD in.
         """
         from matplotlib.cm import rainbow
         from numpy import linspace
@@ -346,14 +346,14 @@ class EpochsPSD:
             label = self.info['ch_names'][self.picks[i]]
             axes.plot(self.freqs[freq_index_min: freq_index_max],
                       psds[i, :], color=c, label=label,
-                      alpha=.5, picker=2)
+                      alpha=.5, picker=2, linewidth=1)
         return axes
 
     # ------------------------------------------------------------------------
     def plot_all_avg_psd(self, freq_index_min, freq_index_max,
                          axes=None, log_display=False):
         """
-        Plot all average single PSD in the axes
+        Plot all average single PSD in the axes.
         """
         from matplotlib.cm import rainbow
         from numpy import linspace
@@ -368,13 +368,13 @@ class EpochsPSD:
             label = self.info['ch_names'][self.picks[i]]
             axes.plot(self.freqs[freq_index_min: freq_index_max],
                       psds[i, :], color=c, label=label,
-                      alpha=.5, picker=2)
+                      alpha=.5, picker=2, linewidth=1)
         return axes
 
     # ------------------------------------------------------------------------
     def channel_index_from_coord(self, x, y):
         """
-        Returns the index of the channel with coordinates closest to (x,y)
+        Returns the index of the channel with coordinates closest to (x,y).
         """
         from numpy import argmin
 

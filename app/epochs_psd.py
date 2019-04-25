@@ -122,18 +122,22 @@ class EpochsPSDWindow(QDialog):
         """
         from backend.util import get_index_freq
 
-        fmin = float(self.ui.fmin.text())
-        fmax = float(self.ui.fmax.text())
+        try:
+            fmin = float(self.ui.fmin.text())
+        except ValueError:
+            fmin = self.psd.freqs[0]
+        try:
+            fmax = float(self.ui.fmax.text())
+        except ValueError:
+            fmax = self.psd.freqs[-1]
         self.f_index_min, self.f_index_max = get_index_freq(
                                                 self.psd.freqs, fmin, fmax)
-        self.vmax = self.ui.vmax.text()
-        self.vmin = self.ui.vmin.text()
         try:
-            self.vmax = float(self.vmax)
+            self.vmax = float(self.ui.vmax.text())
         except ValueError:
             self.vmax = None
         try:
-            self.vmin = float(self.vmin)
+            self.vmin = float(self.ui.vmin.text())
         except ValueError:
             self.vmin = None
 

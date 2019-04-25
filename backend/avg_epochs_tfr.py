@@ -54,11 +54,11 @@ class AvgEpochsTFR:
         Plot the averaged epochs time-frequency plot for a given channel
         """
         from matplotlib.pyplot import imshow
-        from numpy import log
+        from numpy import log, mean
 
         data = self.tfr.data[index_channel, :, :]
         if log_display:
-            data = 10 * log(data)
+            data = 10 * log(data / mean(data))
         extent = [self.tfr.times[0], self.tfr.times[-1],
                   self.tfr.freqs[0], self.tfr.freqs[-1]]
         return ax.imshow(data, extent=extent, aspect='auto',
@@ -69,11 +69,11 @@ class AvgEpochsTFR:
                      vmin=None, vmax=None, log_display=False):
         """Plot the averaged epochs frequency-channel plot for a given time"""
         from matplotlib.pyplot import imshow
-        from numpy import log
+        from numpy import log, mean
 
         data = self.tfr.data[:, :, time_index]
         if log_display:
-            data = 10 * log(data)
+            data = 10 * log(data / mean(data))
         extent = [self.tfr.freqs[0], self.tfr.freqs[-1],
                   .5, len(self.picks)+.5]
         return ax.imshow(data, extent=extent, aspect='auto',
@@ -87,11 +87,11 @@ class AvgEpochsTFR:
         range
         """
         from matplotlib.pyplot import imshow
-        from numpy import log
+        from numpy import log, mean
 
         data = self.tfr.data[:, freq_index, :]
         if log_display:
-            data = 10 * log(data)
+            data = 10 * log(data / mean(data))
         extent = [self.tfr.times[0], self.tfr.times[-1],
                   .5,                len(self.picks)+.5]
         return ax.imshow(data, extent=extent, aspect='auto',

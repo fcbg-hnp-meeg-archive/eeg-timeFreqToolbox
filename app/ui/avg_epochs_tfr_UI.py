@@ -113,4 +113,4 @@ class Ui_AvgTFRWindow(object):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.Display.setText(_translate("Dialog", "Display"))
         self.label.setText(_translate("Dialog", "Scaling"))
-        self.log.setText(_translate("Dialog", "log"))
+        self.log.setText(_translate("Dialog", "Log-ratio"))

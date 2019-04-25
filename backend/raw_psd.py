@@ -246,7 +246,7 @@ class RawPSD:
             label = self.info['ch_names'][self.picks[i]]
             axes.plot(self.freqs[freq_index_min: freq_index_max],
                       psds[i, :], color=c, label=label,
-                      alpha=.5, picker=2)
+                      alpha=.5, picker=2, linewidth=1)
         return axes
 
     # ------------------------------------------------------------------------
