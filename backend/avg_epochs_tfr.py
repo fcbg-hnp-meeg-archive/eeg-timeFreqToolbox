@@ -23,9 +23,70 @@ class AvgEpochsTFR:
         Initialize the class with an instance of EpochsTFR corresponding
         to the method
         """
-        self.picks = picks
+        from backend.util import eeg_to_montage
+
         self.cmap = 'jet'
         self.info = epochs.info
+
+        if picks is not None:
+            self.picks = picks
+        else:
+            self.picks = list(range(0, len(epochs.info['ch_names'])))
+        for bad in epochs.info['bads']:
+            try:
+                bad_pick = epochs.info['ch_names'].index(bad)
+                self.picks.remove(bad_pick)
+            except Exception as e:
+                print(e)
+
+        montage = eeg_to_montage(epochs)
+        if montage is not None:
+            # First we create variable head_pos for a correct plotting
+            self.pos = montage.get_pos2d()
+            scale = 0.85 / (self.pos.max(axis=0) - self.pos.min(axis=0))
+            center = 0.5 * (self.pos.max(axis=0) + self.pos.min(axis=0))
+            self.head_pos = {'scale': scale, 'center': center}
+
+            # Handling of possible channels without any known coordinates
+            no_coord_channel = False
+            try:
+                names = montage.ch_names
+                indices = [names.index(epochs.info['ch_names'][i])
+                           for i in self.picks]
+                self.pos = self.pos[indices, :]
+            except Exception as e:
+                print(e)
+                no_coord_channel = True
+
+            # If there is not as much positions as the number of Channels
+            # we have to eliminate some channels from the data of topomaps
+            if no_coord_channel:
+                from mne.channels import read_montage
+                from numpy import array
+
+                index = 0
+                self.pos = []           # positions
+                # index in the self.data of channels with coordinates
+                self.with_coord = []
+
+                for i in self.picks:
+                    ch_name = epochs.info['ch_names'][i]
+                    try:
+                        ch_montage = read_montage(
+                            montage.kind, ch_names=[ch_name])
+                        coord = ch_montage.get_pos2d()
+                        self.pos.append(coord[0])
+                        self.with_coord.append(index)
+                    except Exception as e:
+                        print(e)
+                    index += 1
+                self.pos = array(self.pos)
+
+            else:
+                self.with_coord = [i for i in range(len(self.picks))]
+
+        else:  # If there is no montage available
+            self.head_pos = None
 
         if method == 'multitaper':
             from mne.time_frequency import tfr_multitaper
