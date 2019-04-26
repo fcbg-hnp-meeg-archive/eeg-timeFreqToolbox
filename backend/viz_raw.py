@@ -95,9 +95,17 @@ def _add_colorbar(win, position):
 def _plot_single_psd(win, channel_picked):
     """Plot one single PSD
     """
+    from mne.viz import plot_topomap
+    import numpy as np
+    from matplotlib.colors import ListedColormap
+
+    white = np.array([[0, 0, 0, 0]])
+    cmp = ListedColormap(white)
+
     plt.close('all')
     fig = plt.figure(figsize=(5, 5))
-    ax = fig.add_subplot(1, 1, 1)
+    gs = fig.add_gridspec(3, 4)
+    ax = fig.add_subplot(gs[:, :3])
     win.psd.plot_single_psd(channel_picked - 1, axes=ax,
                             log_display=win.log)
     index_ch = win.psd.picks[channel_picked - 1]
@@ -110,9 +118,20 @@ def _plot_single_psd(win, channel_picked):
         ax.set_ylabel('Power (dB)')
     else:
         ax.set_ylabel('Power (µV²/Hz)')
+
+    if (channel_picked - 1) in win.psd.with_coord:
+        ax = fig.add_subplot(gs[1, 3])
+        zeros = [0 for i in range(len(win.psd.pos))]
+        mask = np.array([False for i in range(len(win.psd.pos))])
+        mask[win.psd.with_coord.index(channel_picked - 1)] = True
+        plot_topomap(zeros, win.psd.pos, axes=ax, cmap=cmp, mask=mask,
+                     mask_params=dict(marker='.', markersize=18,
+                                      markerfacecolor='black',
+                                      markeredgecolor='black'))
+
     win = fig.canvas.manager.window
     win.setWindowModality(Qt.WindowModal)
     win.setWindowTitle("PSD")
-    win.resize(1200, 1000)
+    win.resize(1400, 1000)
     win.findChild(QStatusBar).hide()
     fig.show()

@@ -234,14 +234,14 @@ class RawPSD:
         """
         Plot all single PSD in
         """
-        from matplotlib.cm import rainbow
+        from matplotlib.cm import jet
         from numpy import linspace
 
         psds = self.data[:, freq_index_min: freq_index_max]
         if log_display:
             psds = 10 * log(psds)
         nchan = len(self.picks)
-        colors = rainbow(linspace(0, 1, nchan))
+        colors = jet(linspace(0, 1, nchan))
         for i, c in zip(range(nchan), colors):
             label = self.info['ch_names'][self.picks[i]]
             axes.plot(self.freqs[freq_index_min: freq_index_max],
