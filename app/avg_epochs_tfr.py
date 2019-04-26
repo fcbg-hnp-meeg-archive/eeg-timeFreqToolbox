@@ -64,11 +64,11 @@ class AvgTFRWindow(QDialog):
         """
         self.index = self.ui.mainSlider.value()
         self.ui.mainSlider.setMinimum(0)
-        self.ui.fSlider.setMaximum(len(self.avg.tfr.freqs) - 1)
+        self.ui.fSlider.setMaximum(len(self.avg.tfr.freqs) - 2)
         self.ui.fSlider.setMinimum(1)
         self.ui.fSlider.setValue(0)
         self.ui.fSlider.setTickInterval(1)
-        self.ui.tSlider.setMaximum(len(self.avg.tfr.times) - 1)
+        self.ui.tSlider.setMaximum(len(self.avg.tfr.times) - 2)
         self.ui.tSlider.setMinimum(1)
         self.ui.tSlider.setValue(0)
         self.ui.tSlider.setTickInterval(1)
@@ -84,8 +84,8 @@ class AvgTFRWindow(QDialog):
         self.ui.tmax.editingFinished.connect(self.value_changed)
         self.ui.fmin.editingFinished.connect(self.value_changed)
         self.ui.fmax.editingFinished.connect(self.value_changed)
-        self.ui.fSlider.valueChanged.connect(self.slider_changed)
-        self.ui.tSlider.valueChanged.connect(self.slider_changed)
+        self.ui.fSlider.valueChanged.connect(self.slider_freq_changed)
+        self.ui.tSlider.valueChanged.connect(self.slider_time_changed)
         self.ui.displayBox.currentIndexChanged.connect(self.update_slider)
         self.ui.mainSlider.valueChanged.connect(self.value_changed)
         self.ui.log.stateChanged.connect(self.value_changed)
@@ -137,7 +137,7 @@ class AvgTFRWindow(QDialog):
         self.plot()
 
     # ---------------------------------------------------------------------
-    def slider_changed(self):
+    def slider_freq_changed(self):
         """Change the values of frequency and time for topomap when
         the slider is moved
         """
@@ -146,6 +146,13 @@ class AvgTFRWindow(QDialog):
                       self.avg.tfr.freqs[freq_index + 1])
         self.ui.fmin.setText(str(fmin))
         self.ui.fmax.setText(str(fmax))
+        self.value_changed()
+
+    # ---------------------------------------------------------------------
+    def slider_time_changed(self):
+        """Change the values of time and time for topomap when
+        the slider is moved
+        """
         time_index = self.ui.tSlider.value()
         tmin, tmax = (self.avg.tfr.times[time_index - 1],
                       self.avg.tfr.times[time_index + 1])

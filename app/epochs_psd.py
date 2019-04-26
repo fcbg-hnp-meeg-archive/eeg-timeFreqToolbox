@@ -67,6 +67,7 @@ class EpochsPSDWindow(QDialog):
         self.ui.displayLog.stateChanged.connect(self.value_changed)
         self.ui.showSingleEpoch.stateChanged.connect(self.value_changed)
         self.ui.vmax.editingFinished.connect(self.value_changed)
+        self.ui.vmin.editingFinished.connect(self.value_changed)
         self.ui.selectPlotType.currentIndexChanged.connect(self.plot_change)
 
     # ---------------------------------------------------------------------

@@ -125,6 +125,7 @@ class RawPSDWindow(QDialog):
             fmin = float(self.ui.fmin.text())
         except ValueError:
             fmin = self.psd.freqs[0]
+
         try:
             fmax = float(self.ui.fmax.text())
         except ValueError:
