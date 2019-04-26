@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 def _plot_time_freq(self):
     """Plot the time-frequency representation
     """
+    from backend.viz_util import _plot_legend_topomap
     self.ui.figure.clear()
-    ax = self.ui.figure.add_subplot(1, 1, 1)
+    gs = self.ui.figure.add_gridspec(10, 30)
+    ax = self.ui.figure.add_subplot(gs[:, :25])
     self.cbar_image = self.avg.plot_time_freq(
         self.index, ax, vmin=self.vmin, vmax=self.vmax, log_display=self.log)
     ax.set_title('Time-Frequency Plot - Channel {}'.format(
@@ -18,9 +20,12 @@ def _plot_time_freq(self):
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequencies (Hz)')
     ax.grid(False)
-    add_colorbar(self, [0.85, 0.15, 0.02, 0.7])
-    self.ui.figure.subplots_adjust(top=0.85, right=0.8,
-                                   left=0.1, bottom=0.1)
+    cax = self.ui.figure.add_subplot(gs[2:, 27])
+    cbar = plt.colorbar(self.cbar_image, cax=cax, format='%6.1e')
+    cbar.ax.set_xlabel('Power', labelpad=15)
+    tax = cax = self.ui.figure.add_subplot(gs[:2, 25:30])
+    _plot_legend_topomap(self, tax, self.index + 1)
+
     self.ui.canvas.draw()
 
 
@@ -29,7 +34,8 @@ def _plot_freq_ch(self):
     """Plot the frequency-channel representation
     """
     self.ui.figure.clear()
-    ax = self.ui.figure.add_subplot(1, 1, 1)
+    gs = self.ui.figure.add_gridspec(10, 30)
+    ax = self.ui.figure.add_subplot(gs[:, :25])
     self.cbar_image = self.avg.plot_freq_ch(
         self.index, ax, vmin=self.vmin, vmax=self.vmax, log_display=self.log)
     ax.set_title(('Frequency-Channel Plot - Time {:.2f}s'
@@ -38,9 +44,9 @@ def _plot_freq_ch(self):
     ax.set_xlabel('Frequencies (Hz)')
     ax.set_ylabel('Channels')
     ax.grid(False)
-    add_colorbar(self, [0.85, 0.15, 0.02, 0.7])
-    self.ui.figure.subplots_adjust(top=0.85, right=0.8,
-                                   left=0.1, bottom=0.1)
+    cax = self.ui.figure.add_subplot(gs[:, 27])
+    cbar = plt.colorbar(self.cbar_image, cax=cax, format='%6.1e')
+    cbar.ax.set_xlabel('Power', labelpad=15)
     self.ui.canvas.draw()
 
 
@@ -49,7 +55,8 @@ def _plot_time_ch(self):
     """Plot the time-channels representation
     """
     self.ui.figure.clear()
-    ax = self.ui.figure.add_subplot(1, 1, 1)
+    gs = self.ui.figure.add_gridspec(10, 30)
+    ax = self.ui.figure.add_subplot(gs[:, :25])
     self.cbar_image = self.avg.plot_time_ch(
         self.index, ax, vmin=self.vmin, vmax=self.vmax, log_display=self.log)
     ax.set_title(('Time-Channel Plot - Frequency {:.2f}'
@@ -58,9 +65,9 @@ def _plot_time_ch(self):
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Channels')
     ax.grid(False)
-    add_colorbar(self, [0.85, 0.15, 0.02, 0.7])
-    self.ui.figure.subplots_adjust(top=0.85, right=0.8,
-                                   left=0.1, bottom=0.1)
+    cax = self.ui.figure.add_subplot(gs[:, 27])
+    cbar = plt.colorbar(self.cbar_image, cax=cax, format='%6.1e')
+    cbar.ax.set_xlabel('Power', labelpad=15)
     self.ui.canvas.draw()
 
 
@@ -87,13 +94,3 @@ def _plot_topomap_tfr(self):
 
     except ValueError:
         print("Error with the parameters")
-
-
-# ---------------------------------------------------------------------
-def add_colorbar(self, position):
-    """ Add colorbar to the plot at correct position
-    """
-    cax = self.ui.figure.add_axes(position)
-    cbar = plt.colorbar(self.cbar_image, cax=cax, format='%6.1e')
-    cbar.ax.get_xaxis().labelpad = 15
-    cbar.ax.set_xlabel('Power')
