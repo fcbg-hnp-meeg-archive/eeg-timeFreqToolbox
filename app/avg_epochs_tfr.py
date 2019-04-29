@@ -55,7 +55,8 @@ class AvgTFRWindow(QDialog):
         self.ui.displayBox.addItem('Time-Frequency plot')
         self.ui.displayBox.addItem('Channel-Frequency plot')
         self.ui.displayBox.addItem('Channel-Time plot')
-        self.ui.displayBox.addItem('Topomap plot')
+        if self.avg.with_coord != []:  # Add topomap if there are coordinates
+            self.ui.displayBox.addItem('Topomap plot')
         self.plotType = 'Time-Frequency plot'
 
     # ---------------------------------------------------------------------

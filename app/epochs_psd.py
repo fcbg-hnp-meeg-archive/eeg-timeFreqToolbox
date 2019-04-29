@@ -52,7 +52,8 @@ class EpochsPSDWindow(QDialog):
         self.ui.vmin.setMaxLength(6)
         self.ui.showMean.setCheckState(2)
         self.ui.selectPlotType.addItem('Matrix')
-        self.ui.selectPlotType.addItem('Topomap')
+        if self.psd.with_coord != []:
+            self.ui.selectPlotType.addItem('Topomap')
         self.ui.selectPlotType.addItem('All PSD')
 
     # ---------------------------------------------------------------------

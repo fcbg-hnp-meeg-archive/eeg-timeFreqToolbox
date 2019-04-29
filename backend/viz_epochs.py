@@ -196,6 +196,8 @@ def _plot_single_psd(win, epoch_picked, channel_picked):
 
     if (channel_picked - 1) in win.psd.with_coord:
         _plot_legend_topomap(win, ax2, channel_picked)
+    else:
+        ax2.remove()
 
     _set_psd_window(win, fig)
 
@@ -218,5 +220,7 @@ def _plot_single_avg_psd(win, channel_picked):
 
     if (channel_picked - 1) in win.psd.with_coord:
         _plot_legend_topomap(win, ax2, channel_picked)
+    else:
+        ax2.remove()
 
     _set_psd_window(win, fig)

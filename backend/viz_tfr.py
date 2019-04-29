@@ -23,8 +23,9 @@ def _plot_time_freq(self):
     cax = self.ui.figure.add_subplot(gs[2:, 27])
     cbar = plt.colorbar(self.cbar_image, cax=cax, format='%6.1e')
     cbar.ax.set_xlabel('Power', labelpad=15)
-    tax = cax = self.ui.figure.add_subplot(gs[:2, 25:30])
-    _plot_legend_topomap(self, tax, self.index + 1)
+    if self.avg.with_coord != []:
+        tax = cax = self.ui.figure.add_subplot(gs[:2, 25:30])
+        _plot_legend_topomap(self, tax, self.index + 1)
 
     self.ui.canvas.draw()
 
@@ -73,6 +74,8 @@ def _plot_time_ch(self):
 
 # ---------------------------------------------------------------------
 def _plot_topomap_tfr(self):
+    """Plot topomap for TFR window
+    """
     from matplotlib.ticker import FormatStrFormatter
 
     try:

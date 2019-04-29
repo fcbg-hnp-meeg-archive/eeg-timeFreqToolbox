@@ -26,6 +26,8 @@ def _prepare_single_psd_plot(win):
 
 # ---------------------------------------------------------------------
 def _plot_legend_topomap(win, ax, channel_picked):
+    """Plot the little topomap legend for the PSD plot
+    """
     from mne.viz import plot_topomap
     import numpy as np
     from matplotlib.colors import ListedColormap
@@ -50,6 +52,8 @@ def _plot_legend_topomap(win, ax, channel_picked):
 
 # ---------------------------------------------------------------------
 def _set_psd_window(win, fig):
+    """Setup the pop-up PSD window
+    """
     win = fig.canvas.manager.window
     win.setWindowModality(Qt.WindowModal)
     win.setWindowTitle("PSD")

@@ -125,6 +125,7 @@ class EpochsPSD:
 
         else:  # If there is no montage available
             self.head_pos = None
+            self.with_coord = []
 
         if method == 'multitaper':
             from mne.time_frequency import psd_multitaper

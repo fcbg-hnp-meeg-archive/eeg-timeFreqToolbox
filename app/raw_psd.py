@@ -44,7 +44,8 @@ class RawPSDWindow(QDialog):
         self.ui.vmin.setText('')       # Auto scaling by default
         self.ui.vmin.setMaxLength(6)
         self.ui.selectPlotType.addItem('Matrix')
-        self.ui.selectPlotType.addItem('Topomap')
+        if self.psd.with_coord != []:  # Add topomap if there are coordinates
+            self.ui.selectPlotType.addItem('Topomap')
         self.ui.selectPlotType.addItem('All PSD')
 
     # ------------------------------------------------------------------------
