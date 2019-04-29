@@ -16,12 +16,20 @@ def _plot_topomap(win):
     """Plot the topomaps
     """
     win.ui.figure.clear()
-    ax = win.ui.figure.add_subplot(1, 1, 1)
+    gs = win.ui.figure.add_gridspec(10, 30)
+    ax = win.ui.figure.add_subplot(gs[:, :25])
     win.cbar_image, _ = win.psd.plot_topomap_band(
                              win.f_index_min, win.f_index_max, axes=ax,
                              vmin=win.vmin, vmax=win.vmax,
                              log_display=win.log)
-    _add_colorbar(win, [0.70, 0.15, 0.02, 0.7])
+    cax = win.ui.figure.add_subplot(gs[:, 27])
+    cbar = plt.colorbar(win.cbar_image, cax=cax)
+    if win.log:
+        label = 'Power (dB)'
+    else:
+        label = 'Power (µV²/Hz)'
+    cbar.ax.set_xlabel(label, labelpad=15)
+
     win.ui.figure.subplots_adjust(top=0.9, right=0.8,
                                   left=0.1, bottom=0.1)
     win.ui.canvas.draw()
@@ -32,7 +40,8 @@ def _plot_matrix(win):
     """Plot the Matrix
     """
     win.ui.figure.clear()
-    ax = win.ui.figure.add_subplot(1, 1, 1)
+    gs = win.ui.figure.add_gridspec(10, 30)
+    ax = win.ui.figure.add_subplot(gs[:, :25])
     win.cbar_image = win.psd.plot_matrix(
                            win.f_index_min, win.f_index_max, axes=ax,
                            vmin=win.vmin, vmax=win.vmax,
@@ -43,9 +52,13 @@ def _plot_matrix(win):
     ax.set_ylabel('Channels')
     ax.xaxis.set_ticks_position('bottom')
     ax.grid(False)
-    _add_colorbar(win, [0.85, 0.15, 0.02, 0.7])
-    win.ui.figure.subplots_adjust(top=0.85, right=0.8,
-                                  left=0.1, bottom=0.1)
+    cax = win.ui.figure.add_subplot(gs[:, 27])
+    cbar = plt.colorbar(win.cbar_image, cax=cax)
+    if win.log:
+        label = 'Power (dB)'
+    else:
+        label = 'Power (µV²/Hz)'
+    cbar.ax.set_xlabel(label, labelpad=15)
     win.ui.canvas.draw()
 
 
@@ -54,7 +67,8 @@ def _plot_all_psd(win):
     """Plot all PSDs
     """
     win.ui.figure.clear()
-    ax = win.ui.figure.add_subplot(1, 1, 1)
+    gs = win.ui.figure.add_gridspec(10, 30)
+    ax = win.ui.figure.add_subplot(gs[:, :30])
     win.annot = ax.annotate("", xy=(0, 0), xytext=(3, 3),
                             textcoords="offset points",
                             arrowprops=dict(arrowstyle="->"))
@@ -72,23 +86,7 @@ def _plot_all_psd(win):
         ax.set_ylabel('Power (dB)')
     else:
         ax.set_ylabel('Power (µV²/Hz)')
-    win.ui.figure.subplots_adjust(top=0.85, right=0.9,
-                                  left=0.1, bottom=0.1)
     win.ui.canvas.draw()
-
-
-# ---------------------------------------------------------------------
-def _add_colorbar(win, position):
-    """ Add colorbar to the plot at correct position
-    """
-    cax = win.ui.figure.add_axes(position)
-    cbar = plt.colorbar(win.cbar_image, cax=cax)
-    cbar.ax.get_xaxis().labelpad = 15
-    if win.log:
-        label = 'Power (dB)'
-    else:
-        label = 'Power (µV²/Hz)'
-    cbar.ax.set_xlabel(label)
 
 
 # ---------------------------------------------------------------------

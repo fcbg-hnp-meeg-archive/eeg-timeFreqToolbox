@@ -15,11 +15,9 @@ win --> instance of EpochsPSDWindow
 def _plot_topomaps(win):
     """Plot the topomaps
     """
-    win.ui.figure.clear()
-    _topomaps_adjust(win)
-    _add_colorbar(win, [0.85, 0.15, 0.02, 0.7])
-    win.ui.figure.subplots_adjust(top=0.9, right=0.8,
-                                  left=0.1, bottom=0.1)
+    gs = win.ui.figure.add_gridspec(10, 30)
+    _topomaps_adjust(win, gs)
+    _add_colorbar(win, gs)
     win.ui.canvas.draw()
 
 
@@ -27,11 +25,9 @@ def _plot_topomaps(win):
 def _plot_matrix(win):
     """Plot the Matrix
     """
-    win.ui.figure.clear()
-    _matrix_adjust(win)
-    _add_colorbar(win, [0.85, 0.15, 0.02, 0.7])
-    win.ui.figure.subplots_adjust(top=0.85, right=0.8,
-                                  left=0.1, bottom=0.1)
+    gs = win.ui.figure.add_gridspec(10, 30)
+    _matrix_adjust(win, gs)
+    _add_colorbar(win, gs)
     win.ui.canvas.draw()
 
 
@@ -39,21 +35,19 @@ def _plot_matrix(win):
 def _plot_all_psd(win):
     """Plot all the PSD
     """
-    win.ui.figure.clear()
-    _plot_all_psd_adjust(win)
-    win.ui.figure.subplots_adjust(top=0.9, right=0.9,
-                                  left=0.1, bottom=0.1)
+    gs = win.ui.figure.add_gridspec(10, 30)
+    _plot_all_psd_adjust(win, gs)
     win.ui.canvas.draw()
 
 
 # ---------------------------------------------------------------------
-def _add_colorbar(win, position):
+def _add_colorbar(win, gs):
     """Add colorbar to the plot at correct position
     """
     if (win.ui.showSingleEpoch.checkState()
             or win.ui.showMean.checkState()):
         # plot a common colorbar for both representations
-        cax = win.ui.figure.add_axes(position)
+        cax = win.ui.figure.add_subplot(gs[:, 27])
         cbar = plt.colorbar(win.cbar_image, cax=cax)
         cbar.ax.get_xaxis().labelpad = 15
         if win.log:
@@ -65,19 +59,17 @@ def _add_colorbar(win, position):
 
 # Adjusting the plots
 # =====================================================================
-def _topomaps_adjust(win):
+def _topomaps_adjust(win, gs):
     """Plot the good number of subplots and update cbar_image instance
     """
-
-    if (win.ui.showMean.checkState()
-            and win.ui.showSingleEpoch.checkState()):
-        nbFrames = 2
-    else:
-        nbFrames = 1
+    win.ui.figure.clear()
+    both = (win.ui.showMean.checkState()
+            and win.ui.showSingleEpoch.checkState())
 
     # Plot single epoch if showSingleEpoch is checked
     if win.ui.showSingleEpoch.checkState():
-        ax = win.ui.figure.add_subplot(1, nbFrames, 1)
+        slice = gs[:, :12] if both else gs[:, 0:25]
+        ax = win.ui.figure.add_subplot(slice)
         win.cbar_image, _ = win.psd.plot_topomap_band(
                                 win.epoch_index,
                                 win.f_index_min, win.f_index_max,
@@ -89,7 +81,8 @@ def _topomaps_adjust(win):
 
     # plot average data if showMean is checked
     if win.ui.showMean.checkState():
-        ax = win.ui.figure.add_subplot(1, nbFrames, nbFrames)
+        slice = gs[:, 13:25] if both else gs[:, :25]
+        ax = win.ui.figure.add_subplot(slice)
         win.cbar_image, _ = win.psd.plot_avg_topomap_band(
                                 win.f_index_min, win.f_index_max, axes=ax,
                                 vmin=win.vmin, vmax=win.vmax,
@@ -99,18 +92,17 @@ def _topomaps_adjust(win):
 
 
 # ---------------------------------------------------------------------
-def _matrix_adjust(win):
+def _matrix_adjust(win, gs):
     """Plot the matrix and update cbar_image instance
     """
-    if (win.ui.showMean.checkState()
-            and win.ui.showSingleEpoch.checkState()):
-        nbFrames = 2
-    else:
-        nbFrames = 1
+    win.ui.figure.clear()
+    both = (win.ui.showMean.checkState()
+            and win.ui.showSingleEpoch.checkState())
 
     # plot single epoch data uf showSingleEpoch is checked
     if win.ui.showSingleEpoch.checkState():
-        ax = win.ui.figure.add_subplot(1, nbFrames, 1)
+        slice = gs[:, :12] if both else gs[:, 0:25]
+        ax = win.ui.figure.add_subplot(slice)
         win.cbar_image = win.psd.plot_matrix(
                               win.epoch_index,
                               win.f_index_min, win.f_index_max,
@@ -126,7 +118,8 @@ def _matrix_adjust(win):
 
     # plot average data if showMean is checked
     if win.ui.showMean.checkState():
-        ax = win.ui.figure.add_subplot(1, nbFrames, nbFrames)
+        slice = gs[:, 13:25] if both else gs[:, :25]
+        ax = win.ui.figure.add_subplot(slice)
         win.cbar_image = win.psd.plot_avg_matrix(
                               win.f_index_min, win.f_index_max, axes=ax,
                               vmin=win.vmin, vmax=win.vmax,
@@ -141,18 +134,17 @@ def _matrix_adjust(win):
 
 
 # ---------------------------------------------------------------------
-def _plot_all_psd_adjust(win):
+def _plot_all_psd_adjust(win, gs):
     """Plot all the PSD
     """
-    if (win.ui.showMean.checkState()
-            and win.ui.showSingleEpoch.checkState()):
-        nbFrames = 2
-    else:
-        nbFrames = 1
+    win.ui.figure.clear()
+    both = (win.ui.showMean.checkState()
+            and win.ui.showSingleEpoch.checkState())
 
     # plot single epoch data uf showSingleEpoch is checked
     if win.ui.showSingleEpoch.checkState():
-        ax = win.ui.figure.add_subplot(1, nbFrames, 1)
+        slice = gs[:, :14] if both else gs[:, 0:30]
+        ax = win.ui.figure.add_subplot(slice)
         win.psd.plot_all_psd(
             win.epoch_index, win.f_index_min, win.f_index_max,
             axes=ax, log_display=win.log)
@@ -169,7 +161,8 @@ def _plot_all_psd_adjust(win):
 
     # plot average data if showMean is checked
     if win.ui.showMean.checkState():
-        ax = win.ui.figure.add_subplot(1, nbFrames, nbFrames)
+        slice = gs[:, 15:30] if both else gs[:, :30]
+        ax = win.ui.figure.add_subplot(slice)
         win.psd.plot_all_avg_psd(
             win.f_index_min, win.f_index_max,
             axes=ax, log_display=win.log)
