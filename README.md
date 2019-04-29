@@ -4,6 +4,9 @@ The Time-Frequency toolbox GUI is a graphic user interface designed to interact 
 
 [MNE Library Link](https://martinos.org/mne/dev/index.html)
 
+  ![](https://raw.githubusercontent.com/fcbg-hnp/eeg-timeFreqToolbox/master/assets/psd.png)
+
+
 # Installation
 
 To install the dependencies required for this application, change the working directory to the repository and run the line `pip install -r requirements.txt`. You must have `python3 installed`.
@@ -21,11 +24,13 @@ This toolbox does not perform any preprocessing in the file, so you have to prep
 
  * **PSD (Power Spectrum Density)** : Which computes the power spectrum density of the signal. You can display the results either in the form of a matrix (Simple plot of individual Channels by Frequencies), or as a topomap (Power of electrode represented on the scalp). It is also possible to run across the different epochs if the file is epoched data. This gui also features a handy double click function that displays the PSD of the channel selected with the mouse.
 
-  ![](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/blob/master/assets/psdwindow.png)
+  ![](https://raw.githubusercontent.com/fcbg-hnp/eeg-timeFreqToolbox/master/assets/topo.png)
+  ![](https://raw.githubusercontent.com/fcbg-hnp/eeg-timeFreqToolbox/master/assets/matrix.png)
+
 
  * **Average TFR (Average Time-Frequency)** : Which computes the time-frequency representation of the signal averaged over epochs. *This feature only works on epoched data*. You can either display the results on regular time-frequency representation (Time by Frequency), or displays it in different ways (channels by frequencies, or channels by time).
 
-  ![](https://github.com/fcbg-hnp/eeg-timeFreqToolbox/blob/master/assets/tfrwindow.png )
+  ![](https://raw.githubusercontent.com/fcbg-hnp/eeg-timeFreqToolbox/master/assets/tfr.png)
 
 
 ## Parameters handling
