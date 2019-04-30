@@ -31,7 +31,8 @@ class TimeFreq(QMainWindow):
 
     # ---------------------------------------------------------------------
     def setup_boxes(self):
-        """Setup the boxes with names"""
+        """Setup the boxes with names
+        """
         self.ui.psdMethod.addItem('welch')
         self.ui.psdMethod.addItem('multitaper')
         self.ui.tfrMethodBox.addItem('stockwell')
@@ -293,6 +294,7 @@ class TimeFreq(QMainWindow):
                   + 'Please verify the path and extension')
         else:
             from backend.time_freq import _open_tfr_visualizer
+            self.data.load_data()
             _open_tfr_visualizer(self)
 
     # Saving
