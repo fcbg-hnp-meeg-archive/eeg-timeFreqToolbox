@@ -21,6 +21,8 @@ class TimeFreq(QMainWindow):
         self.filePaths = ['']
         self.type = None
         self.selected_ch = []
+        self.selected_events = []
+        self.events, self.event_id = None, None
         self.montage = None
         self.set_bindings()
         self.setup_boxes()
@@ -53,6 +55,9 @@ class TimeFreq(QMainWindow):
 
         (self.ui.channelButton.clicked
          .connect(self.open_channel_picker))
+
+        (self.ui.eventsButton.clicked
+         .connect(self.open_events_picker))
 
         (self.ui.dataFilesBox.currentIndexChanged
          .connect(self.data_box_changed))
@@ -91,6 +96,8 @@ class TimeFreq(QMainWindow):
     def read_data(self):
         """Reads the data from path
         """
+        from mne import events_from_annotations
+
         index = self.ui.dataFilesBox.currentIndex()
         if self.filePaths[index].endswith('-epo.fif'):
             from mne import read_epochs
@@ -101,6 +108,7 @@ class TimeFreq(QMainWindow):
             from mne.io import read_raw_fif
             self.type = 'raw'
             self.data = read_raw_fif(self.filePaths[index])
+            self.events, self.event_id = events_from_annotations(self.data)
             print('Raw file initialized')
         else:
             raise TypeError("Type not handled")
@@ -159,15 +167,30 @@ class TimeFreq(QMainWindow):
         _init_psd_parameters(self)
         _init_tfr_parameters(self)
 
-    # Channel picking functions
+    # Channel and events picking functions
     # ========================================================================
     def open_channel_picker(self):
         """Open the channel picker
         """
         from app.select_channels import PickChannels
+
         try:
             channels = self.data.info['ch_names']
             picker = PickChannels(self, channels, self.selected_ch)
+            picker.exec_()
+        except AttributeError:
+            print('Please initialize the EEG data '
+                  + 'before proceeding.')
+
+    # ---------------------------------------------------------------------
+    def open_events_picker(self):
+        """Open the events picker
+        """
+        from app.select_events import PickEvents
+
+        try:
+            picker = PickEvents(self, self.event_id.keys(),
+                                self.selected_events)
             picker.exec_()
         except AttributeError:
             print('Please initialize the EEG data '
@@ -178,6 +201,11 @@ class TimeFreq(QMainWindow):
         """Set selected channels
         """
         self.selected_ch = selected
+
+    def set_selected_events(self, selected):
+        """Set selected events
+        """
+        self.selected_events = selected
 
     # Open PSD Visualizer
     # ========================================================================
