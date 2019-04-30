@@ -75,6 +75,12 @@ class TimeFreq(QMainWindow):
         (self.ui.epochingPanel.clicked
          .connect(self.epoch_signal))
 
+        (self.ui.tmin.editingFinished
+         .connect(self.init_epochs))
+
+        (self.ui.tmax.editingFinished
+         .connect(self.init_epochs))
+
     # Data path and Data handling functions
     # ========================================================================
     def choose_data_path(self):
@@ -129,19 +135,28 @@ class TimeFreq(QMainWindow):
             else:
                 self.read_data()
                 self.type = 'raw'
-            self.set_informations()
+                self.set_informations()
 
     # ---------------------------------------------------------------------
     def init_epochs(self):
+        """Init the epochs
+        """
         from mne import Epochs
         if len(self.selected_events) != 0:
-            tmin = -0.2
-            tmax = 0.5
+            try:
+                tmin = float(self.ui.tmin.text())
+            except ValueError:
+                tmin = -0.2
+            try:
+                tmax = float(self.ui.tmax.text())
+            except ValueError:
+                tmax = 0.5
             event_id = [self.event_id[key] for key in self.selected_events]
             self.read_data()
             self.data = Epochs(self.data, self.events, event_id=event_id,
                                tmin=tmin, tmax=tmax)
             self.type = 'epochs'
+        self.set_informations()
 
     # ---------------------------------------------------------------------
     def set_data_box(self):
