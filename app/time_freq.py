@@ -19,6 +19,7 @@ class TimeFreq(QMainWindow):
     # ========================================================================
     def setup_ui(self):
         self.filePaths = ['']
+        self.data = None
         self.type = None
         self.selected_ch = []
         self.selected_events = []
@@ -71,6 +72,9 @@ class TimeFreq(QMainWindow):
         (self.ui.savePsdButton.clicked
          .connect(self.choose_save_path))
 
+        (self.ui.epochingPanel.clicked
+         .connect(self.epoch_signal))
+
     # Data path and Data handling functions
     # ========================================================================
     def choose_data_path(self):
@@ -112,6 +116,32 @@ class TimeFreq(QMainWindow):
             print('Raw file initialized')
         else:
             raise TypeError("Type not handled")
+
+    # ---------------------------------------------------------------------
+    def epoch_signal(self):
+        """Epoch signal if the epoching box is pressed
+        """
+        if self.data is None:
+            self.ui.epochingPanel.setChecked(False)
+        else:
+            if self.ui.epochingPanel.isChecked():
+                self.init_epochs()
+            else:
+                self.read_data()
+                self.type = 'raw'
+            self.set_informations()
+
+    # ---------------------------------------------------------------------
+    def init_epochs(self):
+        from mne import Epochs
+        if len(self.selected_events) != 0:
+            tmin = -0.2
+            tmax = 0.5
+            event_id = [self.event_id[key] for key in self.selected_events]
+            self.read_data()
+            self.data = Epochs(self.data, self.events, event_id=event_id,
+                               tmin=tmin, tmax=tmax)
+            self.type = 'epochs'
 
     # ---------------------------------------------------------------------
     def set_data_box(self):
@@ -202,10 +232,14 @@ class TimeFreq(QMainWindow):
         """
         self.selected_ch = selected
 
+    # ---------------------------------------------------------------------
     def set_selected_events(self, selected):
         """Set selected events
         """
         self.selected_events = selected
+        self.ui.eventsLabel.setText(",".join(selected))
+        self.init_epochs()
+        self.set_informations()
 
     # Open PSD Visualizer
     # ========================================================================
