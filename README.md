@@ -1,4 +1,6 @@
-# EEG Time-Frequency Toolbox GUI
+# EEG Time-Frequency Toolbox GUI **DEPRECATED**
+
+## This repository is out of date. If you want to use this toolbox, we strongly advise you to use [MNELAB](https://github.com/fcbg-hnp/mnelab), which includes all the feature.
 
 The Time-Frequency toolbox GUI is a graphic user interface designed to interact with the MNE Library, by using its frequency and time-frequency analysis functions. 
 
